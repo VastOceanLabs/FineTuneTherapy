@@ -27,23 +27,33 @@
         
         .comet {
             position: absolute;
-            border-radius: 50% 15% 15% 50%;
+            border-radius: 15% 50% 50% 15%;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             font-weight: bold;
             color: #121d33;
-            background: linear-gradient(to left, rgba(255,255,255,0.95), rgba(111, 211, 245, 0.9), rgba(72, 202, 228, 0.5) 70%, transparent);
-            box-shadow: 0 0 15px rgba(111, 211, 245, 0.4);
+            background: linear-gradient(to right, rgba(255,255,255,0.95), rgba(111, 211, 245, 0.9), rgba(72, 202, 228, 0.5) 70%, transparent);
+            box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4);
             cursor: pointer;
             z-index: 5;
+            overflow: visible;
+            animation: pulsate 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulsate {
+            0% { box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(111, 211, 245, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4); }
         }
         
         .comet-tail {
             position: absolute;
             pointer-events: none;
-            background: linear-gradient(to left, rgba(111, 211, 245, 0.3), transparent);
+            background: linear-gradient(to right, rgba(111, 211, 245, 0.3), rgba(170, 230, 255, 0.5), transparent);
             z-index: 4;
+            border-radius: 0 5% 5% 0;
+            box-shadow: 0 0 10px rgba(111, 211, 245, 0.2);
         }
         
         .burst {
@@ -53,6 +63,20 @@
         @keyframes burstAnim {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+            animation: fadeOut 1s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 0.9; }
+            100% { opacity: 0; transform: translateY(20px); }
         }
         
         #settings-panel {
@@ -528,13 +552,20 @@
             comet.style.left = `${startX}px`;
             comet.style.top = `${y}px`;
             
-            // Create tail for comet
+            // Add some random rotation for visual interest
+            const rotation = Math.random() * 10 - 5; // -5 to +5 degrees
+            comet.style.transform = `rotate(${rotation}deg)`;
+            
+            // Create tail for comet (now positioned to the right of the comet)
             const tail = document.createElement('div');
             tail.classList.add('comet-tail');
-            tail.style.width = `${cometSize * 2}px`;
+            tail.style.width = `${cometSize * 2.5}px`;
             tail.style.height = `${cometSize / 2}px`;
-            tail.style.left = `${startX - cometSize * 2}px`;
+            tail.style.left = `${startX + cometSize}px`; // Position tail to the right of the comet
             tail.style.top = `${y}px`;
+            
+            // Match the rotation of the comet
+            tail.style.transform = `rotate(${rotation}deg)`;
             
             // Add to the game container
             gameContainer.appendChild(comet);
@@ -565,7 +596,12 @@
                 
                 // Update position
                 comet.style.left = `${currentX}px`;
-                tail.style.left = `${currentX - comet.offsetWidth * 2}px`;
+                tail.style.left = `${currentX + comet.offsetWidth}px`; // Position tail to trail behind the comet
+                
+                // Occasionally create particles for visual effect (10% chance each frame)
+                if (Math.random() < 0.1) {
+                    createParticle(currentX, y, comet.offsetHeight);
+                }
                 
                 // Check if comet is off-screen to the left
                 if (currentX < -comet.offsetWidth * 3) {
@@ -606,6 +642,33 @@
             setTimeout(() => {
                 removeComet(comet, tail);
             }, 300);
+        }
+        
+        function createParticle(x, y, cometHeight) {
+            if (!isSessionActive) return;
+            
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random size between 2-5px
+            const size = Math.random() * 3 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // Position around the comet
+            const offsetY = (Math.random() - 0.5) * cometHeight;
+            particle.style.left = `${x + cometHeight/2}px`;
+            particle.style.top = `${y + cometHeight/2 + offsetY}px`;
+            
+            // Add to DOM
+            gameContainer.appendChild(particle);
+            
+            // Remove after animation completes
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 1000);
         }
         
         function removeComet(comet, tail) {
