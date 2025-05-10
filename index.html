@@ -75,6 +75,14 @@
             margin: 0 auto 30px;
         }
         
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
         .button {
             display: inline-block;
             background-color: rgba(72, 202, 228, 0.9);
@@ -85,6 +93,7 @@
             font-weight: bold;
             font-size: 1.1rem;
             transition: all 0.3s;
+            text-align: center;
         }
         
         .button:hover {
@@ -96,7 +105,6 @@
         .button.secondary {
             background-color: transparent;
             border: 2px solid rgba(72, 202, 228, 0.9);
-            margin-left: 15px;
         }
         
         .button.secondary:hover {
@@ -202,16 +210,8 @@
                 margin: 5px 10px;
             }
             
-            .button {
-                display: block;
-                margin: 10px auto;
-                width: 80%;
-                text-align: center;
-            }
-            
-            .button.secondary {
-                margin-left: auto;
-                margin-right: auto;
+            .button-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -233,9 +233,14 @@
         <section class="hero">
             <h2>Exploring the Depths of Recovery</h2>
             <p>Fine Tune Therapy provides interactive tools designed to assist in stroke recovery and rehabilitation. Our exercises help patients improve motor control and cognitive function.</p>
-            <a href="bubble-exercise.html" target="_blank" class="button">Start Bubble Tap Exercise</a>
-            <a href="comet-exercise.html" target="_blank" class="button">Start Comet Tap Exercise</a>
-            <a href="maze-exercise.html" target="_blank" class="button">Start Cosmic Maze Exercise</a>
+            <div class="button-grid">
+                <a href="bubble-exercise.html" target="_blank" class="button">Start Bubble Tap</a>
+                <a href="comet-exercise.html" target="_blank" class="button">Start Comet Tap</a>
+                <a href="trace-reveal-exercise.html" target="_blank" class="button">Start Trace & Reveal</a>
+                <a href="rhythm-exercise.html" target="_blank" class="button">Start Rhythm Reach</a>
+                <a href="precision-drop-exercise.html" target="_blank" class="button">Start Precision Drop</a>
+                <a href="maze-exercise.html" target="_blank" class="button">Start Cosmic Maze</a>
+            </div>
             <a href="#projects" class="button secondary">View All Exercises</a>
         </section>
         
@@ -260,25 +265,33 @@
                 
                 <div class="project-card">
                     <div class="project-content">
+                        <h4 class="project-title">Trace and Reveal</h4>
+                        <p class="project-description">Develop controlled finger movements and coordination by tracing over hidden images to reveal them. Helps with fine motor control and sustained attention.</p>
+                        <a href="trace-reveal-exercise.html" target="_blank" class="button">Start Exercise</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-content">
+                        <h4 class="project-title">Rhythm Reach Exercise</h4>
+                        <p class="project-description">Improve memory and sequential processing skills by tapping highlighted squares in the correct order. Progressive difficulty helps build cognitive function.</p>
+                        <a href="rhythm-exercise.html" target="_blank" class="button">Start Exercise</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-content">
+                        <h4 class="project-title">Precision Drop Exercise</h4>
+                        <p class="project-description">Enhance hand-eye coordination and fine motor control by dragging objects to specific targets. Adjustable difficulty levels and multiple target options for progressive therapy.</p>
+                        <a href="precision-drop-exercise.html" target="_blank" class="button">Start Exercise</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-content">
                         <h4 class="project-title">Cosmic Maze Exercise</h4>
                         <p class="project-description">Improve planning, coordination and fine motor control by navigating a spaceship through cosmic mazes to reach Earth. Features adjustable difficulty levels.</p>
                         <a href="maze-exercise.html" target="_blank" class="button">Start Exercise</a>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-content">
-                        <h4 class="project-title">Pattern Recognition</h4>
-                        <p class="project-description">Enhance cognitive function through pattern recognition exercises. Adjustable difficulty levels accommodate various recovery stages.</p>
-                        <a href="#" class="button">Coming Soon</a>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-content">
-                        <h4 class="project-title">Memory Match</h4>
-                        <p class="project-description">Strengthen memory and concentration with our memory matching exercise. Track progress and see improvements over time.</p>
-                        <a href="#" class="button">Coming Soon</a>
                     </div>
                 </div>
             </div>
