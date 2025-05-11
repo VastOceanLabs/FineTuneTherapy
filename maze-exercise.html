@@ -101,7 +101,6 @@
             touch-action: none;
             animation: pulse 1.5s infinite alternate;
             transform: translate(-50%, -50%);
-            transition: all 0.3s ease;
         }
         
         @keyframes pulse {
@@ -135,6 +134,7 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 2;
+            transform: translate(-50%, -50%);
         }
         
         #timer-bar {
@@ -492,8 +492,11 @@
         let wallThickness = 10;
         let currentDifficulty = 'easy';
         let pathTraces = [];
-        let pathNodes = []; // Store path node positions for navigation
-        let playerNodeIndex = 0; // Current player position on path
+        let pathLines = [];
+        
+        // Player position
+        let playerX = 0;
+        let playerY = 0;
         
         // Difficulty settings
         const difficultySizes = {
@@ -659,11 +662,10 @@
             player.style.height = `${playerSize}px`;
             
             // Position player at start (center of first path)
-            const startX = cellSize / 2;
-            const startY = cellSize / 2;
-            player.style.left = `${startX}px`;
-            player.style.top = `${startY}px`;
-            playerNodeIndex = 0;
+            playerX = cellSize / 2;
+            playerY = cellSize / 2;
+            player.style.left = `${playerX}px`;
+            player.style.top = `${playerY}px`;
             
             // Add player to maze
             mazeContainer.appendChild(player);
@@ -694,7 +696,7 @@
         }
         
         function createPathLines(cols, rows) {
-            pathNodes = [];
+            pathLines = [];
             
             // Create lines in the center of each path
             for (let i = 0; i < rows; i++) {
@@ -702,15 +704,6 @@
                     const cell = maze[i][j];
                     const centerX = (j + 0.5) * cellSize;
                     const centerY = (i + 0.5) * cellSize;
-                    
-                    // Create a path node at the center of this cell
-                    pathNodes.push({
-                        x: centerX,
-                        y: centerY,
-                        cellX: j,
-                        cellY: i,
-                        connections: []
-                    });
                     
                     // Add horizontal path line if no right wall
                     if (!cell.walls.right && j < cols - 1) {
@@ -721,6 +714,14 @@
                         pathLine.style.width = `${cellSize}px`;
                         pathLine.style.transform = 'translateY(-50%)';
                         mazeContainer.appendChild(pathLine);
+                        pathLines.push({
+                            element: pathLine,
+                            type: 'horizontal',
+                            startX: centerX,
+                            startY: centerY,
+                            endX: centerX + cellSize,
+                            endY: centerY
+                        });
                     }
                     
                     // Add vertical path line if no bottom wall
@@ -732,6 +733,14 @@
                         pathLine.style.height = `${cellSize}px`;
                         pathLine.style.transform = 'translateX(-50%)';
                         mazeContainer.appendChild(pathLine);
+                        pathLines.push({
+                            element: pathLine,
+                            type: 'vertical',
+                            startX: centerX,
+                            startY: centerY,
+                            endX: centerX,
+                            endY: centerY + cellSize
+                        });
                     }
                     
                     // Add node visualization
@@ -740,30 +749,6 @@
                     nodeElement.style.left = `${centerX}px`;
                     nodeElement.style.top = `${centerY}px`;
                     mazeContainer.appendChild(nodeElement);
-                }
-            }
-            
-            // Set up connections between nodes
-            for (let i = 0; i < pathNodes.length; i++) {
-                const node = pathNodes[i];
-                const cell = maze[node.cellY][node.cellX];
-                
-                // Check each direction for connections
-                if (!cell.walls.right && node.cellX < cols - 1) {
-                    const rightNodeIndex = i + 1;
-                    node.connections.push(rightNodeIndex);
-                }
-                if (!cell.walls.left && node.cellX > 0) {
-                    const leftNodeIndex = i - 1;
-                    node.connections.push(leftNodeIndex);
-                }
-                if (!cell.walls.bottom && node.cellY < rows - 1) {
-                    const bottomNodeIndex = i + cols;
-                    node.connections.push(bottomNodeIndex);
-                }
-                if (!cell.walls.top && node.cellY > 0) {
-                    const topNodeIndex = i - cols;
-                    node.connections.push(topNodeIndex);
                 }
             }
         }
@@ -906,7 +891,10 @@
         }
         
         function setupPlayerMovement() {
-            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let offsetX = 0;
+            let offsetY = 0;
             
             // Mouse events for desktop
             player.addEventListener('mousedown', startDragging);
@@ -922,12 +910,25 @@
                 if (!isSessionActive) return;
                 e.preventDefault();
                 isDragging = true;
+                
+                const mazeRect = mazeContainer.getBoundingClientRect();
+                dragStartX = e.clientX - mazeRect.left;
+                dragStartY = e.clientY - mazeRect.top;
+                offsetX = dragStartX - playerX;
+                offsetY = dragStartY - playerY;
             }
             
             function startDraggingTouch(e) {
                 if (!isSessionActive) return;
                 e.preventDefault();
                 isDragging = true;
+                
+                const touch = e.touches[0];
+                const mazeRect = mazeContainer.getBoundingClientRect();
+                dragStartX = touch.clientX - mazeRect.left;
+                dragStartY = touch.clientY - mazeRect.top;
+                offsetX = dragStartX - playerX;
+                offsetY = dragStartY - playerY;
             }
             
             function handleDrag(e) {
@@ -935,10 +936,10 @@
                 e.preventDefault();
                 
                 const mazeRect = mazeContainer.getBoundingClientRect();
-                const mouseX = e.clientX - mazeRect.left;
-                const mouseY = e.clientY - mazeRect.top;
+                const targetX = e.clientX - mazeRect.left - offsetX;
+                const targetY = e.clientY - mazeRect.top - offsetY;
                 
-                movePlayerTowards(mouseX, mouseY);
+                movePlayer(targetX, targetY);
             }
             
             function handleDragTouch(e) {
@@ -947,136 +948,80 @@
                 
                 const touch = e.touches[0];
                 const mazeRect = mazeContainer.getBoundingClientRect();
-                const touchX = touch.clientX - mazeRect.left;
-                const touchY = touch.clientY - mazeRect.top;
+                const targetX = touch.clientX - mazeRect.left - offsetX;
+                const targetY = touch.clientY - mazeRect.top - offsetY;
                 
-                movePlayerTowards(touchX, touchY);
+                movePlayer(targetX, targetY);
             }
             
-            function movePlayerTowards(targetX, targetY) {
-                // Find the nearest path node to the target position
-                let nearestNodeIndex = -1;
-                let minDistance = Infinity;
+            function movePlayer(targetX, targetY) {
+                // Calculate new position
+                let newX = targetX;
+                let newY = targetY;
                 
-                for (let i = 0; i < pathNodes.length; i++) {
-                    const node = pathNodes[i];
-                    const distance = Math.sqrt(
-                        Math.pow(node.x - targetX, 2) + 
-                        Math.pow(node.y - targetY, 2)
-                    );
-                    
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        nearestNodeIndex = i;
-                    }
-                }
+                // Keep player within maze bounds
+                const playerRadius = parseInt(player.style.width) / 2;
+                newX = Math.max(playerRadius, Math.min(mazeWidth - playerRadius, newX));
+                newY = Math.max(playerRadius, Math.min(mazeHeight - playerRadius, newY));
                 
-                // Find path from current node to target node
-                if (nearestNodeIndex !== -1 && nearestNodeIndex !== playerNodeIndex) {
-                    const path = findPath(playerNodeIndex, nearestNodeIndex);
-                    if (path.length > 0) {
-                        moveAlongPath(path);
-                    }
-                }
-            }
-            
-            function findPath(startIndex, endIndex) {
-                // A* pathfinding on the node graph
-                const openSet = [startIndex];
-                const cameFrom = {};
-                const gScore = {};
-                const fScore = {};
-                
-                // Initialize scores
-                for (let i = 0; i < pathNodes.length; i++) {
-                    gScore[i] = Infinity;
-                    fScore[i] = Infinity;
-                }
-                gScore[startIndex] = 0;
-                fScore[startIndex] = heuristic(startIndex, endIndex);
-                
-                while (openSet.length > 0) {
-                    // Find node with lowest fScore
-                    let current = openSet[0];
-                    let currentIndex = 0;
-                    
-                    for (let i = 1; i < openSet.length; i++) {
-                        if (fScore[openSet[i]] < fScore[current]) {
-                            current = openSet[i];
-                            currentIndex = i;
-                        }
-                    }
-                    
-                    // Remove current from openSet
-                    openSet.splice(currentIndex, 1);
-                    
-                    // Found the goal
-                    if (current === endIndex) {
-                        const path = [];
-                        while (current !== startIndex) {
-                            path.unshift(current);
-                            current = cameFrom[current];
-                        }
-                        return path;
-                    }
-                    
-                    // Check all connected nodes
-                    const currentNode = pathNodes[current];
-                    for (const neighbor of currentNode.connections) {
-                        const tentativeGScore = gScore[current] + 1;
-                        
-                        if (tentativeGScore < gScore[neighbor]) {
-                            cameFrom[neighbor] = current;
-                            gScore[neighbor] = tentativeGScore;
-                            fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, endIndex);
-                            
-                            if (!openSet.includes(neighbor)) {
-                                openSet.push(neighbor);
-                            }
-                        }
-                    }
-                }
-                
-                return []; // No path found
-            }
-            
-            function heuristic(nodeIndex1, nodeIndex2) {
-                const node1 = pathNodes[nodeIndex1];
-                const node2 = pathNodes[nodeIndex2];
-                return Math.abs(node1.x - node2.x) + Math.abs(node1.y - node2.y);
-            }
-            
-            function moveAlongPath(path) {
-                let currentIndex = 0;
-                
-                function moveToNextNode() {
-                    if (currentIndex >= path.length) return;
-                    
-                    const targetNodeIndex = path[currentIndex];
-                    const targetNode = pathNodes[targetNodeIndex];
-                    
+                // Check if movement is valid (along paths)
+                if (isValidMove(playerX, playerY, newX, newY)) {
                     // Update player position
-                    playerNodeIndex = targetNodeIndex;
-                    player.style.left = `${targetNode.x}px`;
-                    player.style.top = `${targetNode.y}px`;
+                    playerX = newX;
+                    playerY = newY;
+                    player.style.left = `${playerX}px`;
+                    player.style.top = `${playerY}px`;
                     
                     // Leave path trace if enabled
                     if (showTrace) {
-                        createPathTrace(targetNode.x, targetNode.y);
+                        createPathTrace(playerX, playerY);
                     }
                     
                     // Check if reached goal
                     checkGoal();
+                }
+            }
+            
+            function isValidMove(fromX, fromY, toX, toY) {
+                // Find which cell the player is currently in
+                const currentCellX = Math.floor(fromX / cellSize);
+                const currentCellY = Math.floor(fromY / cellSize);
+                
+                // Find which cell the player wants to move to
+                const targetCellX = Math.floor(toX / cellSize);
+                const targetCellY = Math.floor(toY / cellSize);
+                
+                // Allow movement within the same cell
+                if (currentCellX === targetCellX && currentCellY === targetCellY) {
+                    return true;
+                }
+                
+                // Check if movement crosses a wall
+                if (targetCellX >= 0 && targetCellX < maze[0].length && 
+                    targetCellY >= 0 && targetCellY < maze.length) {
                     
-                    currentIndex++;
+                    const currentCell = maze[currentCellY][currentCellX];
+                    const targetCell = maze[targetCellY][targetCellX];
                     
-                    // Continue moving if not at final node
-                    if (currentIndex < path.length) {
-                        setTimeout(moveToNextNode, 200);
+                    // Moving right
+                    if (targetCellX > currentCellX && !currentCell.walls.right) {
+                        return true;
+                    }
+                    // Moving left
+                    if (targetCellX < currentCellX && !currentCell.walls.left) {
+                        return true;
+                    }
+                    // Moving down
+                    if (targetCellY > currentCellY && !currentCell.walls.bottom) {
+                        return true;
+                    }
+                    // Moving up
+                    if (targetCellY < currentCellY && !currentCell.walls.top) {
+                        return true;
                     }
                 }
                 
-                moveToNextNode();
+                return false;
             }
             
             function stopDragging() {
@@ -1096,7 +1041,6 @@
             // Position
             trace.style.left = `${x}px`;
             trace.style.top = `${y}px`;
-            trace.style.transform = 'translate(-50%, -50%)';
             
             // Add to maze container
             mazeContainer.appendChild(trace);
@@ -1114,12 +1058,21 @@
         }
         
         function checkGoal() {
-            // Check if player reached goal node
-            const cols = Math.floor(mazeWidth / cellSize);
-            const rows = Math.floor(mazeHeight / cellSize);
-            const goalNodeIndex = (rows * cols) - 1; // Last node in the array
+            // Get goal position
+            const goalLeft = parseFloat(goal.style.left);
+            const goalTop = parseFloat(goal.style.top);
+            const goalSize = parseFloat(goal.style.width);
             
-            if (playerNodeIndex === goalNodeIndex) {
+            // Check if player is near goal
+            const distance = Math.sqrt(
+                Math.pow(playerX - goalLeft, 2) + 
+                Math.pow(playerY - goalTop, 2)
+            );
+            
+            const playerRadius = parseInt(player.style.width) / 2;
+            const goalRadius = goalSize / 2;
+            
+            if (distance < (playerRadius + goalRadius - 5)) {
                 // Calculate completion time
                 const completionTime = Date.now() - mazeStartTime;
                 totalCompletionTime += completionTime;
@@ -1164,9 +1117,6 @@
                 }
             });
             pathTraces = [];
-            
-            // Clear path nodes array
-            pathNodes = [];
         }
         
         function updateStats() {
@@ -1238,4 +1188,3 @@
     </script>
 </body>
 </html>
-            
