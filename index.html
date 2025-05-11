@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fine Tune Therapy provides interactive tools designed to assist in motor function rehabilitation through engaging exercises">
+    <meta name="keywords" content="rehabilitation, therapy, motor function, cognitive function, therapeutic exercises">
+    <meta property="og:title" content="Fine Tune Therapy - Vast Ocean Labs">
+    <meta property="og:description" content="Supporting rehabilitation through interactive exercises">
+    <meta property="og:type" content="website">
     <title>Fine Tune Therapy - Vast Ocean Labs</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: -webkit-linear-gradient(top, #000000, #0c2461, #0a7e8c);
+            background: -moz-linear-gradient(top, #000000, #0c2461, #0a7e8c);
             background: linear-gradient(to bottom, #000000, #0c2461, #0a7e8c);
             color: white;
             line-height: 1.6;
@@ -171,7 +178,7 @@
         }
         
         .stars-container {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -190,6 +197,10 @@
         }
         
         @media (max-width: 768px) {
+            .stars-container {
+                display: none; /* Hide stars on mobile for better performance */
+            }
+            
             .projects {
                 grid-template-columns: 1fr;
             }
@@ -224,9 +235,9 @@
             <h1>Fine Tune Therapy</h1>
             <div class="subtitle">Supporting rehabilitation through interactive exercises</div>
             <nav>
-                <a href="#about">About</a>
-                <a href="#projects">Exercises</a>
-                <a href="#contact">Contact</a>
+                <a href="#about" aria-label="Learn about Fine Tune Therapy">About</a>
+                <a href="#projects" aria-label="View therapeutic exercises">Exercises</a>
+                <a href="#contact" aria-label="Contact information">Contact</a>
             </nav>
         </header>
         
@@ -234,12 +245,12 @@
             <h2>Exploring the Depths of Recovery</h2>
             <p>Fine Tune Therapy provides interactive tools designed to assist in motor function rehabilitation. Our exercises aim to help patients improve motor control and cognitive function through engaging activities.</p>
             <div class="button-grid">
-                <a href="bubble-exercise.html" target="_blank" class="button">Start Bubble Tap</a>
-                <a href="comet-exercise.html" target="_blank" class="button">Start Comet Tap</a>
-                <a href="trace-reveal-exercise.html" target="_blank" class="button">Start Trace & Reveal</a>
-                <a href="rhythm-exercise.html" target="_blank" class="button">Start Rhythm Reach</a>
-                <a href="precision-drop-exercise.html" target="_blank" class="button">Start Precision Drop</a>
-                <a href="maze-exercise.html" target="_blank" class="button">Start Cosmic Maze</a>
+                <a href="bubble-exercise.html" target="_blank" class="button">Bubble Tap</a>
+                <a href="comet-exercise.html" target="_blank" class="button">Comet Tap</a>
+                <a href="trace-reveal-exercise.html" target="_blank" class="button">Trace & Reveal</a>
+                <a href="rhythm-exercise.html" target="_blank" class="button">Rhythm Reach</a>
+                <a href="precision-drop-exercise.html" target="_blank" class="button">Precision Drop</a>
+                <a href="maze-exercise.html" target="_blank" class="button">Cosmic Maze</a>
             </div>
             <a href="#projects" class="button secondary">View All Exercises</a>
         </section>
@@ -251,7 +262,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Bubble Tap Exercise</h4>
                         <p class="project-description">Aimed at improving fine motor control and reaction time with our interactive bubble tapping therapy tool. Customizable for different skill levels.</p>
-                        <a href="bubble-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="bubble-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
                 
@@ -259,7 +270,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Comet Tap Exercise</h4>
                         <p class="project-description">Designed to enhance dynamic finger tracking and coordination by tapping moving comets that travel across the screen. Adjustable sizes and speeds for progressive therapy.</p>
-                        <a href="comet-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="comet-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
                 
@@ -267,7 +278,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Trace and Reveal</h4>
                         <p class="project-description">Helps develop controlled finger movements and coordination by tracing over hidden images to reveal them. Supports fine motor control practice and sustained attention.</p>
-                        <a href="trace-reveal-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="trace-reveal-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
                 
@@ -275,7 +286,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Rhythm Reach Exercise</h4>
                         <p class="project-description">Aims to improve memory and sequential processing skills by tapping highlighted squares in the correct order. Progressive difficulty helps build cognitive function.</p>
-                        <a href="rhythm-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="rhythm-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
                 
@@ -283,7 +294,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Precision Drop Exercise</h4>
                         <p class="project-description">Designed to enhance hand-eye coordination and fine motor control by dragging objects to specific targets. Adjustable difficulty levels and multiple target options for progressive therapy.</p>
-                        <a href="precision-drop-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="precision-drop-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
                 
@@ -291,7 +302,7 @@
                     <div class="project-content">
                         <h4 class="project-title">Cosmic Maze Exercise</h4>
                         <p class="project-description">Aims to improve planning, coordination and fine motor control by navigating a spaceship through cosmic mazes to reach Earth. Features adjustable difficulty levels.</p>
-                        <a href="maze-exercise.html" target="_blank" class="button">Start Exercise</a>
+                        <a href="maze-exercise.html" target="_blank" class="button">Try Now</a>
                     </div>
                 </div>
             </div>
@@ -307,7 +318,7 @@
         <section id="contact">
             <h3>Contact Us</h3>
             <p style="text-align: center; max-width: 800px; margin: 0 auto 30px;">
-                For more information about our therapeutic exercises or to provide feedback, please contact us at <a href="mailto:info@finetunerehab.com" style="color: rgba(72, 202, 228, 1);">info@finetunerehab.com</a>
+                For more information about our therapeutic exercises or to provide feedback, please contact us at <a href="mailto:info@vastoceanlabs.com" style="color: rgba(72, 202, 228, 1);">info@vastoceanlabs.com</a>
             </p>
         </section>
     </div>
@@ -318,9 +329,9 @@
     </footer>
     
     <script>
-        // Create stars for background effect
+        // Create stars for background effect (reduced for better performance)
         const starsContainer = document.getElementById('stars-container');
-        const starsCount = 100;
+        const starsCount = window.innerWidth > 768 ? 100 : 0; // No stars on mobile
         
         for (let i = 0; i < starsCount; i++) {
             const star = document.createElement('div');
