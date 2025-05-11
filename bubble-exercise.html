@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stroke Therapy Bubble Tap</title>
+    <title>Fine Motor Therapy Bubble Tap</title>
     <style>
         body {
             margin: 0;
@@ -242,12 +242,72 @@
             opacity: 0.4;
         }
         
+        /* Finger guide panel */
+        #finger-guide {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(8, 15, 35, 0.85);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 50;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #finger-guide h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            text-align: center;
+            color: rgba(111, 211, 245, 1);
+        }
+        
+        .finger-legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .finger-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .finger-number {
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(111, 211, 245, 0.9));
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #121d33;
+        }
+        
         @media (max-width: 768px) {
             .stat-value {
                 font-size: 20px;
             }
             
             .stat-label {
+                font-size: 12px;
+            }
+            
+            #finger-guide {
+                width: 90%;
+                padding: 8px 15px;
+            }
+            
+            .finger-legend {
+                gap: 10px;
+            }
+            
+            .finger-item {
                 font-size: 12px;
             }
         }
@@ -260,6 +320,32 @@
         <div id="bubble"></div>
         
         <button id="settings-toggle">Settings</button>
+        
+        <div id="finger-guide" class="hidden">
+            <h3>Finger Guide</h3>
+            <div class="finger-legend">
+                <div class="finger-item">
+                    <div class="finger-number">1</div>
+                    <span>Thumb</span>
+                </div>
+                <div class="finger-item">
+                    <div class="finger-number">2</div>
+                    <span>Index</span>
+                </div>
+                <div class="finger-item">
+                    <div class="finger-number">3</div>
+                    <span>Middle</span>
+                </div>
+                <div class="finger-item">
+                    <div class="finger-number">4</div>
+                    <span>Ring</span>
+                </div>
+                <div class="finger-item">
+                    <div class="finger-number">5</div>
+                    <span>Pinky</span>
+                </div>
+            </div>
+        </div>
         
         <div id="settings-panel" class="hidden">
             <h2>Settings</h2>
@@ -334,6 +420,7 @@
         const statsPanel = document.getElementById('stats-panel');
         const completionMessage = document.getElementById('completion-message');
         const starsContainer = document.getElementById('stars-container');
+        const fingerGuide = document.getElementById('finger-guide');
         
         // Create stars for background effect
         const starsCount = 50; // Reduced number for subtle effect
@@ -407,6 +494,7 @@
         restartButton.addEventListener('click', () => {
             completionMessage.classList.add('hidden');
             settingsPanel.classList.remove('hidden');
+            fingerGuide.classList.add('hidden');
         });
         
         // Initialize
@@ -441,6 +529,13 @@
             settingsPanel.classList.add('hidden');
             statsPanel.classList.remove('hidden');
             
+            // Show finger guide if finger numbers are enabled
+            if (fingerOption !== 'none') {
+                fingerGuide.classList.remove('hidden');
+            } else {
+                fingerGuide.classList.add('hidden');
+            }
+            
             // Start timer
             isSessionActive = true;
             lastBubbleTime = Date.now();
@@ -467,9 +562,10 @@
             clearInterval(timerInterval);
             isSessionActive = false;
             
-            // Hide bubble and stats
+            // Hide bubble, stats, and finger guide
             bubble.classList.add('hidden');
             statsPanel.classList.add('hidden');
+            fingerGuide.classList.add('hidden');
             
             // Show completion message
             finalScoreElement.textContent = score;
@@ -560,6 +656,7 @@
             settingsPanel.classList.remove('hidden');
             statsPanel.classList.add('hidden');
             completionMessage.classList.add('hidden');
+            fingerGuide.classList.add('hidden');
         }
         
         // Prevent zooming on double tap
