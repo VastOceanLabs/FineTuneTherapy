@@ -425,6 +425,12 @@
         // Create stars for background effect
         const starsCount = 50;
         
+        // Helper function to get random direction for draggable objects
+        function getRandomDirection() {
+            const directions = ['left', 'right', 'top', 'bottom'];
+            return directions[Math.floor(Math.random() * directions.length)];
+        }
+        
         for (let i = 0; i < starsCount; i++) {
             const star = document.createElement('div');
             star.classList.add('star');
@@ -581,18 +587,21 @@
             const gameRect = gameArea.getBoundingClientRect();
             const padding = 50;
             
-            // Create targets
+            // Create targets - position them more towards the center
             for (let i = 0; i < numTargets; i++) {
                 const target = document.createElement('div');
                 target.classList.add('target');
                 target.style.width = `${settings.targetSize}px`;
                 target.style.height = `${settings.targetSize}px`;
                 
-                // Random position with padding
+                // Position targets more towards center to ensure accessibility from all directions
+                const centerBias = 0.3; // How much to bias towards center (0 = no bias, 1 = all center)
                 const maxX = gameRect.width - settings.targetSize - padding;
                 const maxY = gameRect.height - settings.targetSize - padding;
-                const x = padding + Math.random() * maxX;
-                const y = padding + Math.random() * maxY;
+                
+                // Calculate position with center bias
+                const x = padding + (Math.random() * (1 - centerBias) + centerBias * 0.5) * maxX;
+                const y = padding + (Math.random() * (1 - centerBias) + centerBias * 0.5) * maxY;
                 
                 target.style.left = `${x}px`;
                 target.style.top = `${y}px`;
@@ -613,9 +622,29 @@
                     draggable.textContent = i + 1;
                 }
                 
-                // Position on the left side
-                const x = 20;
-                const y = 50 + i * (settings.objectSize + 20);
+                // Random position with direction bias
+                let x, y;
+                const direction = getRandomDirection();
+                const margin = 40;
+                
+                switch(direction) {
+                    case 'left':
+                        x = margin;
+                        y = margin + Math.random() * (gameRect.height - settings.objectSize - 2 * margin);
+                        break;
+                    case 'right':
+                        x = gameRect.width - settings.objectSize - margin;
+                        y = margin + Math.random() * (gameRect.height - settings.objectSize - 2 * margin);
+                        break;
+                    case 'top':
+                        x = margin + Math.random() * (gameRect.width - settings.objectSize - 2 * margin);
+                        y = margin;
+                        break;
+                    case 'bottom':
+                        x = margin + Math.random() * (gameRect.width - settings.objectSize - 2 * margin);
+                        y = gameRect.height - settings.objectSize - margin;
+                        break;
+                }
                 
                 draggable.style.left = `${x}px`;
                 draggable.style.top = `${y}px`;
@@ -630,7 +659,7 @@
             }
             
             // Update status
-            statusMessage.textContent = "Drag each object to its matching target";
+            statusMessage.textContent = "Drag objects from all directions to their matching targets";
             roundStartTime = Date.now();
         }
         
@@ -912,4 +941,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
