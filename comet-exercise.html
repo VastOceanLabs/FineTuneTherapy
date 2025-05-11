@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stroke Therapy Comet Tap - Fine Tune Therapy</title>
+    <title>Stroke Therapy Comet Tap</title>
     <style>
         body {
             margin: 0;
@@ -27,56 +27,106 @@
         
         .comet {
             position: absolute;
-            border-radius: 15% 50% 50% 15%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #121d33;
-            background: linear-gradient(to right, rgba(255,255,255,0.95), rgba(111, 211, 245, 0.9), rgba(72, 202, 228, 0.5) 70%, transparent);
-            box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4);
+            width: 60px;
+            height: 60px;
             cursor: pointer;
             z-index: 5;
             overflow: visible;
-            animation: pulsate 1.5s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        @keyframes pulsate {
-            0% { box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4); }
-            50% { box-shadow: 0 0 20px rgba(111, 211, 245, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.6); }
-            100% { box-shadow: 0 0 15px rgba(111, 211, 245, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4); }
+        .comet-core {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e6f5ff 20%, #6fd3f5 50%, #1a7fa0 100%);
+            box-shadow: 
+                0 0 20px rgba(111, 211, 245, 0.8),
+                0 0 40px rgba(111, 211, 245, 0.5),
+                0 0 60px rgba(111, 211, 245, 0.3),
+                inset 0 0 15px rgba(255, 255, 255, 0.5);
+            animation: cometPulse 2s ease-in-out infinite;
+        }
+        
+        .comet-core::after {
+            content: '';
+            position: absolute;
+            width: 40%;
+            height: 40%;
+            top: 15%;
+            left: 15%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+            filter: blur(2px);
+        }
+        
+        @keyframes cometPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 
+                    0 0 20px rgba(111, 211, 245, 0.8),
+                    0 0 40px rgba(111, 211, 245, 0.5),
+                    0 0 60px rgba(111, 211, 245, 0.3),
+                    inset 0 0 15px rgba(255, 255, 255, 0.5);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 30px rgba(111, 211, 245, 1),
+                    0 0 50px rgba(111, 211, 245, 0.7),
+                    0 0 70px rgba(111, 211, 245, 0.4),
+                    inset 0 0 20px rgba(255, 255, 255, 0.7);
+            }
         }
         
         .comet-tail {
             position: absolute;
             pointer-events: none;
-            background: linear-gradient(to right, rgba(111, 211, 245, 0.3), rgba(170, 230, 255, 0.5), transparent);
+            height: 6px;
+            width: 150px;
+            top: 50%;
+            right: 100%;
+            transform: translateY(-50%);
             z-index: 4;
-            border-radius: 0 5% 5% 0;
-            box-shadow: 0 0 10px rgba(111, 211, 245, 0.2);
         }
         
-        .burst {
-            animation: burstAnim 0.3s ease-out forwards;
+        .comet-tail-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                rgba(111, 211, 245, 0) 0%, 
+                rgba(111, 211, 245, 0.2) 20%, 
+                rgba(111, 211, 245, 0.4) 40%, 
+                rgba(111, 211, 245, 0.6) 70%, 
+                rgba(111, 211, 245, 0.8) 90%,
+                rgba(111, 211, 245, 1) 100%);
+            filter: blur(3px);
+            border-radius: 3px;
         }
         
-        @keyframes burstAnim {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        
-        .particle {
+        .comet-tail-glow {
             position: absolute;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 3;
-            animation: fadeOut 1s ease-out forwards;
+            width: 100%;
+            height: 20px;
+            top: -7px;
+            background: linear-gradient(to right,
+                transparent 0%,
+                rgba(111, 211, 245, 0.1) 50%,
+                rgba(111, 211, 245, 0.3) 100%);
+            filter: blur(8px);
         }
         
-        @keyframes fadeOut {
-            0% { opacity: 0.9; }
-            100% { opacity: 0; transform: translateY(20px); }
+        #timer-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 8px;
+            background-color: rgba(111, 211, 245, 0.9);
+            width: 100%;
+            z-index: 20;
         }
         
         #settings-panel {
@@ -204,16 +254,6 @@
             color: rgba(255, 255, 255, 0.8);
         }
         
-        #timer-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 8px;
-            background-color: rgba(111, 211, 245, 0.9);
-            width: 100%;
-            z-index: 20;
-        }
-        
         .hidden {
             display: none !important;
         }
@@ -267,6 +307,49 @@
             opacity: 0.4;
         }
         
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(111, 211, 245, 0.8);
+            pointer-events: none;
+            z-index: 6;
+            animation: particleFade 0.8s ease-out forwards;
+        }
+        
+        @keyframes particleFade {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.3) translate(var(--dx), var(--dy));
+                opacity: 0;
+            }
+        }
+        
+        .success-burst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(108,255,189,0.7) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: burst 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 7;
+        }
+        
+        @keyframes burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+        
         @media (max-width: 768px) {
             .stat-value {
                 font-size: 20px;
@@ -285,30 +368,39 @@
         
         <button id="settings-toggle">Settings</button>
         
-        <div id="settings-panel">
+        <div id="settings-panel" class="hidden">
             <h2>Settings</h2>
+            <div class="settings-group">
+                <label class="settings-label">Session Duration (minutes):</label>
+                <input type="number" id="session-duration" min="0.5" max="10" value="2" step="0.5">
+            </div>
+            
             <div class="settings-group">
                 <label class="settings-label">Comet Size:</label>
                 <select id="comet-size">
-                    <option value="very-large">Very Large</option>
-                    <option value="large">Large</option>
-                    <option value="medium" selected>Medium</option>
                     <option value="small">Small</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large</option>
                 </select>
             </div>
             
             <div class="settings-group">
                 <label class="settings-label">Comet Speed:</label>
                 <select id="comet-speed">
-                    <option value="slow" selected>Slow</option>
-                    <option value="medium">Medium</option>
+                    <option value="slow">Slow</option>
+                    <option value="medium" selected>Medium</option>
                     <option value="fast">Fast</option>
                 </select>
             </div>
             
             <div class="settings-group">
-                <label class="settings-label">Session Duration (minutes):</label>
-                <input type="number" id="session-duration" min="1" max="10" value="2">
+                <label class="settings-label">Spawn Rate:</label>
+                <select id="spawn-rate">
+                    <option value="very-fast">Very Fast (0.5s)</option>
+                    <option value="fast" selected>Fast (1s)</option>
+                    <option value="medium">Medium (1.5s)</option>
+                    <option value="slow">Slow (2s)</option>
+                </select>
             </div>
             
             <button id="start-session">Start Session</button>
@@ -328,8 +420,8 @@
                 <div class="stat-label">Time Left</div>
             </div>
             <div class="stat-box">
-                <div id="avg-time" class="stat-value">0.0s</div>
-                <div class="stat-label">Avg. Response</div>
+                <div id="accuracy" class="stat-value">0%</div>
+                <div class="stat-label">Accuracy</div>
             </div>
         </div>
         
@@ -338,7 +430,8 @@
             <div id="completion-scores">
                 <p>Final Score: <span id="final-score" class="score-highlight">0</span></p>
                 <p>Comets Tapped: <span id="final-taps" class="score-highlight">0</span></p>
-                <p>Average Response Time: <span id="final-avg-time" class="score-highlight">0.0s</span> seconds</p>
+                <p>Accuracy: <span id="final-accuracy" class="score-highlight">0%</span></p>
+                <p>Average Response Time: <span id="final-avg-time" class="score-highlight">0.0s</span></p>
             </div>
             <button id="restart-button">Start New Session</button>
         </div>
@@ -355,31 +448,29 @@
         const starsContainer = document.getElementById('stars-container');
         
         // Create stars for background effect
-        const starsCount = 150;
+        const starsCount = 50;
         
         for (let i = 0; i < starsCount; i++) {
             const star = document.createElement('div');
             star.classList.add('star');
             
-            // Random position
             star.style.left = `${Math.random() * 100}%`;
             star.style.top = `${Math.random() * 100}%`;
             
-            // Random size
             const size = Math.random() * 2 + 0.5;
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
             
-            // Random opacity for subtle effect
             star.style.opacity = Math.random() * 0.4 + 0.1;
             
             starsContainer.appendChild(star);
         }
         
         // Settings elements
+        const sessionDurationInput = document.getElementById('session-duration');
         const cometSizeSelect = document.getElementById('comet-size');
         const cometSpeedSelect = document.getElementById('comet-speed');
-        const sessionDurationInput = document.getElementById('session-duration');
+        const spawnRateSelect = document.getElementById('spawn-rate');
         const startSessionButton = document.getElementById('start-session');
         const restartButton = document.getElementById('restart-button');
         
@@ -387,45 +478,44 @@
         const scoreElement = document.getElementById('score');
         const tapsElement = document.getElementById('taps');
         const timeLeftElement = document.getElementById('time-left');
-        const avgTimeElement = document.getElementById('avg-time');
+        const accuracyElement = document.getElementById('accuracy');
         
         // Completion elements
         const finalScoreElement = document.getElementById('final-score');
         const finalTapsElement = document.getElementById('final-taps');
+        const finalAccuracyElement = document.getElementById('final-accuracy');
         const finalAvgTimeElement = document.getElementById('final-avg-time');
         
         // Game state variables
         let isSessionActive = false;
-        let sessionDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
+        let sessionDuration = 2 * 60 * 1000;
         let timeRemaining = 0;
         let timerInterval = null;
+        let spawnInterval = null;
         let score = 0;
         let taps = 0;
+        let misses = 0;
         let totalResponseTime = 0;
-        let cometSpawnInterval = null;
-        let activeComets = [];
+        let comets = [];
         
-        // Comet size mapping (in pixels)
+        // Comet settings
         const cometSizes = {
-            'very-large': 150,
-            'large': 120,
-            'medium': 90,
-            'small': 60
+            'small': 40,
+            'medium': 60,
+            'large': 80
         };
         
-        // Comet speed mapping (in pixels per second)
-        // These speeds are intentionally slow to accommodate stroke rehabilitation
         const cometSpeeds = {
-            'slow': 30,    // Very slow movement (30px per second)
-            'medium': 60,  // Moderate, but still accessible (60px per second)
-            'fast': 100    // Faster, but still manageable for rehabilitation (100px per second)
+            'slow': { min: 0.5, max: 1.5 },
+            'medium': { min: 1.0, max: 2.5 },
+            'fast': { min: 2.0, max: 3.5 }
         };
         
-        // Comet spawn rate mapping (in milliseconds)
-        const cometSpawnRates = {
-            'slow': 5000,     // 5 seconds between comets
-            'medium': 3500,   // 3.5 seconds between comets
-            'fast': 2500      // 2.5 seconds between comets
+        const spawnRates = {
+            'very-fast': 800,
+            'fast': 1500,
+            'medium': 2500,
+            'slow': 4000
         };
         
         // Toggle settings panel
@@ -445,20 +535,263 @@
         // Initialize
         showSettings();
         
+        // Create comet element
+        function createComet() {
+            if (!isSessionActive) return;
+            
+            const comet = document.createElement('div');
+            comet.className = 'comet';
+            
+            // Create comet core
+            const cometCore = document.createElement('div');
+            cometCore.className = 'comet-core';
+            
+            // Create tail
+            const tail = document.createElement('div');
+            tail.className = 'comet-tail';
+            
+            const tailInner = document.createElement('div');
+            tailInner.className = 'comet-tail-inner';
+            
+            const tailGlow = document.createElement('div');
+            tailGlow.className = 'comet-tail-glow';
+            
+            tail.appendChild(tailInner);
+            tail.appendChild(tailGlow);
+            
+            // Set size
+            const size = cometSizes[cometSizeSelect.value];
+            comet.style.width = `${size}px`;
+            comet.style.height = `${size}px`;
+            cometCore.style.width = `${size}px`;
+            cometCore.style.height = `${size}px`;
+            
+            // Set random position and direction
+            const edge = Math.floor(Math.random() * 4);
+            let x, y;
+            const margin = 100; // Keep comets spawning further from edges
+            
+            switch (edge) {
+                case 0: // Top
+                    x = margin + Math.random() * (window.innerWidth - 2 * margin);
+                    y = -size;
+                    break;
+                case 1: // Right
+                    x = window.innerWidth + size;
+                    y = margin + Math.random() * (window.innerHeight - 2 * margin);
+                    break;
+                case 2: // Bottom
+                    x = margin + Math.random() * (window.innerWidth - 2 * margin);
+                    y = window.innerHeight + size;
+                    break;
+                case 3: // Left
+                    x = -size;
+                    y = margin + Math.random() * (window.innerHeight - 2 * margin);
+                    break;
+            }
+            
+            comet.style.left = `${x}px`;
+            comet.style.top = `${y}px`;
+            
+            // Set speed
+            const speedRange = cometSpeeds[cometSpeedSelect.value];
+            const speed = speedRange.min + Math.random() * (speedRange.max - speedRange.min);
+            
+            // Calculate direction across screen
+            const targetX = window.innerWidth - x;
+            const targetY = window.innerHeight - y;
+            
+            // Adjust target based on spawn position to ensure crossing screen
+            let finalTargetX, finalTargetY;
+            switch (edge) {
+                case 0: // From top
+                    finalTargetX = x + (Math.random() - 0.5) * 300;
+                    finalTargetY = window.innerHeight + size;
+                    break;
+                case 1: // From right
+                    finalTargetX = -size;
+                    finalTargetY = y + (Math.random() - 0.5) * 300;
+                    break;
+                case 2: // From bottom
+                    finalTargetX = x + (Math.random() - 0.5) * 300;
+                    finalTargetY = -size;
+                    break;
+                case 3: // From left
+                    finalTargetX = window.innerWidth + size;
+                    finalTargetY = y + (Math.random() - 0.5) * 300;
+                    break;
+            }
+            
+            const dx = finalTargetX - x;
+            const dy = finalTargetY - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            const velX = (dx / distance) * speed;
+            const velY = (dy / distance) * speed;
+            
+            // Set initial rotation for the entire comet
+            const angle = Math.atan2(velY, velX) * 180 / Math.PI;
+            comet.style.transform = `rotate(${angle}deg)`;
+            
+            // Add core and tail to comet
+            comet.appendChild(cometCore);
+            comet.appendChild(tail);
+            
+            // Add click/touch event
+            comet.addEventListener('click', () => hitComet(comet));
+            comet.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                hitComet(comet);
+            });
+            
+            // Add to game container
+            gameContainer.appendChild(comet);
+            
+            // Store comet data
+            comet.dataset.velX = velX;
+            comet.dataset.velY = velY;
+            comet.dataset.angle = angle;
+            comet.dataset.spawnTime = Date.now();
+            
+            comets.push(comet);
+        }
+        
+        // Handle comet hit
+        function hitComet(comet) {
+            if (!isSessionActive) return;
+            
+            // Calculate response time
+            const spawnTime = parseInt(comet.dataset.spawnTime);
+            const responseTime = Date.now() - spawnTime;
+            totalResponseTime += responseTime;
+            
+            // Calculate score based on response time and size
+            const sizeMultiplier = cometSizeSelect.value === 'small' ? 1.5 : cometSizeSelect.value === 'large' ? 0.8 : 1;
+            const baseScore = Math.max(50, Math.floor(3000 / responseTime * 100));
+            const points = Math.floor(baseScore * sizeMultiplier);
+            
+            score += points;
+            taps++;
+            
+            updateStats();
+            
+            // Create burst effect
+            createBurst(comet);
+            
+            // Remove comet
+            const index = comets.indexOf(comet);
+            if (index > -1) {
+                comets.splice(index, 1);
+            }
+            if (comet.parentNode) {
+                comet.parentNode.removeChild(comet);
+            }
+        }
+        
+        // Create burst effect
+        function createBurst(comet) {
+            const rect = comet.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create success burst
+            const burst = document.createElement('div');
+            burst.className = 'success-burst';
+            burst.style.left = `${centerX}px`;
+            burst.style.top = `${centerY}px`;
+            gameContainer.appendChild(burst);
+            
+            // Create particles
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 8 + 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 50 + 30;
+                particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+                
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                particle.style.backgroundColor = `rgba(111, 211, 245, ${Math.random() * 0.5 + 0.5})`;
+                
+                gameContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 800);
+            }
+            
+            setTimeout(() => {
+                if (burst.parentNode) {
+                    burst.parentNode.removeChild(burst);
+                }
+            }, 800);
+        }
+        
+        // Update comets position
+        function updateComets() {
+            if (!isSessionActive) return;
+            
+            comets.forEach((comet, index) => {
+                const velX = parseFloat(comet.dataset.velX);
+                const velY = parseFloat(comet.dataset.velY);
+                const angle = parseFloat(comet.dataset.angle);
+                
+                let x = parseFloat(comet.style.left);
+                let y = parseFloat(comet.style.top);
+                
+                x += velX;
+                y += velY;
+                
+                comet.style.left = `${x}px`;
+                comet.style.top = `${y}px`;
+                
+                // Maintain rotation for consistent tail direction
+                comet.style.transform = `rotate(${angle}deg)`;
+                
+                // Remove comet if it's off screen
+                const size = parseFloat(comet.style.width);
+                if (x < -size * 3 || x > window.innerWidth + size * 3 || 
+                    y < -size * 3 || y > window.innerHeight + size * 3) {
+                    if (comet.parentNode) {
+                        gameContainer.removeChild(comet);
+                    }
+                    comets.splice(index, 1);
+                    misses++;
+                    updateStats();
+                }
+            });
+            
+            if (isSessionActive) {
+                requestAnimationFrame(updateComets);
+            }
+        }
+        
         function startSession() {
             // Get settings
-            const cometSize = cometSizeSelect.value;
-            const cometSpeed = cometSpeedSelect.value;
-            sessionDuration = parseInt(sessionDurationInput.value) * 60 * 1000; // Convert minutes to ms
+            sessionDuration = parseFloat(sessionDurationInput.value) * 60 * 1000;
             
             // Reset game state
             score = 0;
             taps = 0;
+            misses = 0;
             totalResponseTime = 0;
             timeRemaining = sessionDuration;
             
-            // Remove any existing comets
-            clearActiveComets();
+            // Clear any existing comets
+            comets.forEach(comet => {
+                if (comet.parentNode) {
+                    comet.parentNode.removeChild(comet);
+                }
+            });
+            comets = [];
             
             // Update UI
             updateStats();
@@ -472,7 +805,7 @@
             isSessionActive = true;
             
             timerInterval = setInterval(() => {
-                timeRemaining -= 100; // Update every 100ms
+                timeRemaining -= 100;
                 
                 // Update timer bar
                 const progress = timeRemaining / sessionDuration;
@@ -488,223 +821,47 @@
             }, 100);
             
             // Start spawning comets
-            startSpawningComets(cometSize, cometSpeed);
+            const spawnRate = spawnRates[spawnRateSelect.value];
+            spawnInterval = setInterval(createComet, spawnRate);
+            
+            // Start animation loop
+            requestAnimationFrame(updateComets);
         }
         
         function endSession() {
             clearInterval(timerInterval);
-            clearInterval(cometSpawnInterval);
+            clearInterval(spawnInterval);
             isSessionActive = false;
             
-            // Hide comets and stats
-            clearActiveComets();
+            // Clear remaining comets
+            comets.forEach(comet => {
+                if (comet.parentNode) {
+                    comet.parentNode.removeChild(comet);
+                }
+            });
+            comets = [];
+            
+            // Hide stats
             statsPanel.classList.add('hidden');
             
             // Show completion message
             finalScoreElement.textContent = score;
             finalTapsElement.textContent = taps;
-            finalAvgTimeElement.textContent = taps > 0 ? (totalResponseTime / taps / 1000).toFixed(2) : '0.00';
+            finalAccuracyElement.textContent = taps + misses > 0 ? 
+                Math.round(taps / (taps + misses) * 100) + '%' : '0%';
+            finalAvgTimeElement.textContent = taps > 0 ? 
+                (totalResponseTime / taps / 1000).toFixed(2) : '0.00';
             completionMessage.classList.remove('hidden');
             
             // Reset timer bar
             timerBar.style.width = '0%';
         }
         
-        function startSpawningComets(sizeOption, speedOption) {
-            const spawnRate = cometSpawnRates[speedOption];
-            
-            // Spawn first comet immediately
-            spawnComet(sizeOption, speedOption);
-            
-            // Schedule future comets
-            cometSpawnInterval = setInterval(() => {
-                if (isSessionActive) {
-                    spawnComet(sizeOption, speedOption);
-                }
-            }, spawnRate);
-        }
-        
-        function spawnComet(sizeOption, speedOption) {
-            if (!isSessionActive) return;
-            
-            const cometSize = cometSizes[sizeOption];
-            const speed = cometSpeeds[speedOption];
-            
-            // Create the comet element
-            const comet = document.createElement('div');
-            comet.classList.add('comet');
-            
-            // Track when the comet was created for response time calculation
-            const creationTime = Date.now();
-            comet.dataset.creationTime = creationTime;
-            
-            // Determine random Y position (with a margin to keep fully visible)
-            const maxY = gameContainer.clientHeight - cometSize;
-            const padding = cometSize / 2;
-            const y = Math.max(padding, Math.min(maxY - padding, Math.random() * maxY));
-            
-            // Set starting position (off-screen to the right)
-            const startX = gameContainer.clientWidth + cometSize;
-            
-            // Set size
-            comet.style.width = `${cometSize}px`;
-            comet.style.height = `${cometSize / 2}px`;
-            comet.style.left = `${startX}px`;
-            comet.style.top = `${y}px`;
-            
-            // Add some random rotation for visual interest
-            const rotation = Math.random() * 10 - 5; // -5 to +5 degrees
-            comet.style.transform = `rotate(${rotation}deg)`;
-            
-            // Create tail for comet (now positioned to the right of the comet)
-            const tail = document.createElement('div');
-            tail.classList.add('comet-tail');
-            tail.style.width = `${cometSize * 2.5}px`;
-            tail.style.height = `${cometSize / 2}px`;
-            tail.style.left = `${startX + cometSize}px`; // Position tail to the right of the comet
-            tail.style.top = `${y}px`;
-            
-            // Match the rotation of the comet
-            tail.style.transform = `rotate(${rotation}deg)`;
-            
-            // Add to the game container
-            gameContainer.appendChild(comet);
-            gameContainer.appendChild(tail);
-            
-            // Add event listener for tapping/clicking
-            comet.addEventListener('click', () => handleCometTap(comet, tail));
-            comet.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                handleCometTap(comet, tail);
-            }, false);
-            
-            // Store the comet and its tail for later cleanup
-            activeComets.push({ comet, tail, speed, startX, y });
-            
-            // Start animation
-            animateComet(comet, tail, speed, startX, y);
-        }
-        
-        function animateComet(comet, tail, speed, startX, y) {
-            let currentX = startX;
-            
-            const moveComet = () => {
-                if (!isSessionActive) return;
-                
-                // Calculate new position based on speed and time
-                currentX -= speed / 60; // Adjust based on 60fps
-                
-                // Update position
-                comet.style.left = `${currentX}px`;
-                tail.style.left = `${currentX + comet.offsetWidth}px`; // Position tail to trail behind the comet
-                
-                // Occasionally create particles for visual effect (10% chance each frame)
-                if (Math.random() < 0.1) {
-                    createParticle(currentX, y, comet.offsetHeight);
-                }
-                
-                // Check if comet is off-screen to the left
-                if (currentX < -comet.offsetWidth * 3) {
-                    // Remove comet and tail
-                    removeComet(comet, tail);
-                    return;
-                }
-                
-                // Continue animation
-                requestAnimationFrame(moveComet);
-            };
-            
-            requestAnimationFrame(moveComet);
-        }
-        
-        function handleCometTap(comet, tail) {
-            if (!isSessionActive) return;
-            
-            // Calculate response time
-            const creationTime = parseInt(comet.dataset.creationTime);
-            const now = Date.now();
-            const responseTime = now - creationTime;
-            totalResponseTime += responseTime;
-            
-            // Calculate points (faster taps = more points, with 5000ms as minimum score of 10)
-            const points = Math.max(10, Math.floor(5000 / responseTime * 100));
-            score += points;
-            taps++;
-            
-            // Update stats
-            updateStats();
-            
-            // Burst animation
-            comet.classList.add('burst');
-            tail.classList.add('burst');
-            
-            // Remove comet after animation
-            setTimeout(() => {
-                removeComet(comet, tail);
-            }, 300);
-        }
-        
-        function createParticle(x, y, cometHeight) {
-            if (!isSessionActive) return;
-            
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // Random size between 2-5px
-            const size = Math.random() * 3 + 2;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            
-            // Position around the comet
-            const offsetY = (Math.random() - 0.5) * cometHeight;
-            particle.style.left = `${x + cometHeight/2}px`;
-            particle.style.top = `${y + cometHeight/2 + offsetY}px`;
-            
-            // Add to DOM
-            gameContainer.appendChild(particle);
-            
-            // Remove after animation completes
-            setTimeout(() => {
-                if (particle.parentNode) {
-                    particle.parentNode.removeChild(particle);
-                }
-            }, 1000);
-        }
-        
-        function removeComet(comet, tail) {
-            // Remove from DOM
-            if (comet && comet.parentNode) {
-                comet.parentNode.removeChild(comet);
-            }
-            
-            if (tail && tail.parentNode) {
-                tail.parentNode.removeChild(tail);
-            }
-            
-            // Remove from active comets array
-            activeComets = activeComets.filter(item => item.comet !== comet);
-        }
-        
-        function clearActiveComets() {
-            // Remove all active comets from the DOM
-            activeComets.forEach(item => {
-                if (item.comet && item.comet.parentNode) {
-                    item.comet.parentNode.removeChild(item.comet);
-                }
-                
-                if (item.tail && item.tail.parentNode) {
-                    item.tail.parentNode.removeChild(item.tail);
-                }
-            });
-            
-            // Clear array
-            activeComets = [];
-        }
-        
         function updateStats() {
             scoreElement.textContent = score;
             tapsElement.textContent = taps;
-            avgTimeElement.textContent = taps > 0 ? (totalResponseTime / taps / 1000).toFixed(1) : '0.0';
+            accuracyElement.textContent = taps + misses > 0 ? 
+                Math.round(taps / (taps + misses) * 100) + '%' : '0%';
         }
         
         function updateTimer() {
@@ -735,9 +892,13 @@
             lastTouchEnd = now;
         }, false);
         
-        // Check if settings are stored in localStorage and apply them
+        // Load/save settings with localStorage
         document.addEventListener('DOMContentLoaded', function() {
             // Load saved settings if they exist
+            if (localStorage.getItem('cometSessionDuration')) {
+                sessionDurationInput.value = localStorage.getItem('cometSessionDuration');
+            }
+            
             if (localStorage.getItem('cometSize')) {
                 cometSizeSelect.value = localStorage.getItem('cometSize');
             }
@@ -746,21 +907,23 @@
                 cometSpeedSelect.value = localStorage.getItem('cometSpeed');
             }
             
-            if (localStorage.getItem('sessionDuration')) {
-                sessionDurationInput.value = localStorage.getItem('sessionDuration');
+            if (localStorage.getItem('cometSpawnRate')) {
+                spawnRateSelect.value = localStorage.getItem('cometSpawnRate');
             }
             
             // Save settings when they change
+            sessionDurationInput.addEventListener('change', saveSettings);
             cometSizeSelect.addEventListener('change', saveSettings);
             cometSpeedSelect.addEventListener('change', saveSettings);
-            sessionDurationInput.addEventListener('change', saveSettings);
+            spawnRateSelect.addEventListener('change', saveSettings);
         });
         
         // Save settings to localStorage
         function saveSettings() {
+            localStorage.setItem('cometSessionDuration', sessionDurationInput.value);
             localStorage.setItem('cometSize', cometSizeSelect.value);
             localStorage.setItem('cometSpeed', cometSpeedSelect.value);
-            localStorage.setItem('sessionDuration', sessionDurationInput.value);
+            localStorage.setItem('cometSpawnRate', spawnRateSelect.value);
         }
     </script>
 </body>
