@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Fine Motor Therapy Bubble Tap</title>
     <style>
         body {
@@ -16,6 +16,7 @@
             background: #121d33;
             color: white;
             min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
         #game-container {
@@ -23,6 +24,15 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+        }
+        
+        #playable-area {
+            position: absolute;
+            top: 15px; /* Space for timer bar only */
+            left: 0;
+            right: 0;
+            bottom: 140px; /* Space for finger guide, stats panel and navigation bars */
+            pointer-events: none; /* Doesn't block touches, just for boundaries */
         }
         
         #bubble {
@@ -36,13 +46,13 @@
             background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(111, 211, 245, 0.9));
             box-shadow: 0 0 15px rgba(111, 211, 245, 0.4);
             cursor: pointer;
-            transform: translate(-50%, -50%);
             transition: transform 0.1s ease-out;
             z-index: 5;
+            pointer-events: auto;
         }
         
         #bubble:active {
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: scale(0.9);
         }
         
         .burst {
@@ -50,8 +60,8 @@
         }
         
         @keyframes burstAnim {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
         
         #settings-panel {
@@ -80,8 +90,8 @@
         
         #settings-toggle {
             position: fixed;
-            bottom: 15px;
-            right: 15px;
+            bottom: calc(15px + env(safe-area-inset-bottom));
+            right: calc(15px + env(safe-area-inset-right));
             background-color: rgba(111, 211, 245, 0.8);
             color: #121d33;
             border: none;
@@ -154,9 +164,9 @@
         
         #stats-panel {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: env(safe-area-inset-bottom);
+            left: env(safe-area-inset-left);
+            right: env(safe-area-inset-right);
             background-color: rgba(8, 15, 35, 0.8);
             padding: 15px;
             display: flex;
@@ -242,23 +252,25 @@
             opacity: 0.4;
         }
         
-        /* Finger guide panel */
+        /* Finger guide panel - moved to top of stats panel */
         #finger-guide {
             position: absolute;
-            top: 15px;
+            bottom: calc(80px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(8, 15, 35, 0.85);
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 50;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 500px;
         }
         
         #finger-guide h3 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
+            margin: 0 0 8px 0;
+            font-size: 14px;
             text-align: center;
             color: rgba(111, 211, 245, 1);
         }
@@ -299,16 +311,31 @@
             }
             
             #finger-guide {
-                width: 90%;
-                padding: 8px 15px;
+                width: 95%;
+                padding: 6px 10px;
+            }
+            
+            #finger-guide h3 {
+                font-size: 13px;
+                margin-bottom: 6px;
             }
             
             .finger-legend {
-                gap: 10px;
+                gap: 8px;
             }
             
             .finger-item {
+                font-size: 11px;
+            }
+            
+            .finger-number {
+                width: 20px;
+                height: 20px;
                 font-size: 12px;
+            }
+            
+            #playable-area {
+                bottom: 120px; /* Keep enough space for finger guide and stats */
             }
         }
     </style>
@@ -317,6 +344,7 @@
     <div id="game-container">
         <div id="stars-container"></div>
         <div id="timer-bar"></div>
+        <div id="playable-area"></div>
         <div id="bubble"></div>
         
         <button id="settings-toggle">Settings</button>
@@ -421,6 +449,7 @@
         const completionMessage = document.getElementById('completion-message');
         const starsContainer = document.getElementById('stars-container');
         const fingerGuide = document.getElementById('finger-guide');
+        const playableArea = document.getElementById('playable-area');
         
         // Create stars for background effect
         const starsCount = 50; // Reduced number for subtle effect
@@ -603,14 +632,22 @@
         }
         
         function resetBubble() {
-            // Calculate safe margins to keep bubble fully visible
-            const maxX = gameContainer.clientWidth - bubbleSize;
-            const maxY = gameContainer.clientHeight - bubbleSize;
+            // Get the playable area bounds
+            const playableRect = playableArea.getBoundingClientRect();
+            const gameRect = gameContainer.getBoundingClientRect();
             
-            // Get random position (with padding from edges)
-            const padding = bubbleSize / 2;
-            const x = Math.max(padding, Math.random() * maxX);
-            const y = Math.max(padding, Math.random() * maxY);
+            // Calculate relative positions accounting for safe areas
+            const minY = playableRect.top - gameRect.top;
+            const maxY = playableRect.bottom - gameRect.top - bubbleSize;
+            const minX = bubbleSize / 2; // Padding from left edge
+            const maxX = gameRect.width - bubbleSize - (bubbleSize / 2); // Padding from right edge
+            
+            // Additional padding to ensure bubble is fully accessible
+            const padding = 10;
+            
+            // Get random position within safe bounds
+            const x = Math.max(minX + padding, Math.min(maxX - padding, minX + padding + Math.random() * (maxX - minX - 2 * padding)));
+            const y = Math.max(minY + padding, Math.min(maxY - padding, minY + padding + Math.random() * (maxY - minY - 2 * padding)));
             
             // Position the bubble
             bubble.style.left = `${x}px`;
@@ -702,6 +739,32 @@
             localStorage.setItem('sessionDuration', sessionDurationInput.value);
             localStorage.setItem('fingerOption', fingerOptionSelect.value);
         }
+        
+        // Handle window resize to ensure bubbles stay in bounds
+        window.addEventListener('resize', function() {
+            if (isSessionActive) {
+                // Reposition bubble to ensure it's still in valid area
+                const currentLeft = parseInt(bubble.style.left);
+                const currentTop = parseInt(bubble.style.top);
+                const playableRect = playableArea.getBoundingClientRect();
+                const gameRect = gameContainer.getBoundingClientRect();
+                
+                const minY = playableRect.top - gameRect.top;
+                const maxY = playableRect.bottom - gameRect.top - bubbleSize;
+                const maxX = gameRect.width - bubbleSize;
+                
+                // Adjust position if out of bounds
+                if (currentLeft > maxX) {
+                    bubble.style.left = `${maxX - 10}px`;
+                }
+                if (currentTop < minY) {
+                    bubble.style.top = `${minY + 10}px`;
+                }
+                if (currentTop > maxY) {
+                    bubble.style.top = `${maxY - 10}px`;
+                }
+            }
+        });
     </script>
 </body>
 </html>
