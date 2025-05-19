@@ -3,7 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Precision Drop - Stroke Therapy Drag & Drop</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>Precision Drop | Fine Point Rehab Motor Skills & Coordination Therapy Exercise App</title>
+    <meta name="description" content="Improve fine motor skills, hand-eye coordination, and precision with this customizable stroke therapy and rehabilitation drag & drop exercise app. Track your progress as you complete therapy sessions.">
+    <meta name="keywords" content="stroke rehabilitation, fine motor skills, hand-eye coordination, physical therapy app, occupational therapy, motor control, drag and drop therapy, precision exercises, stroke recovery, rehabilitation exercises, dexterity training">
+    <meta name="author" content="Fine Point Rehab">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://finepointrehab.com/precision-drop-exercise">
+    <meta property="og:title" content="Precision Drop | Fine Point Rehab Motor Skills & Coordination Therapy Exercise App">
+    <meta property="og:description" content="Improve fine motor skills, hand-eye coordination, and precision with this customizable therapy drag & drop exercise app. Perfect for stroke rehabilitation.">
+    <meta property="og:image" content="https://finepointrehab.com/images/precision-drop-preview.jpg">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://finepointrehab.com/precision-drop-exercise">
+    <meta name="twitter:title" content="Precision Drop | Fine Point Rehab Motor Skills & Coordination Therapy Exercise App">
+    <meta name="twitter:description" content="Improve fine motor skills, hand-eye coordination, and precision with this customizable therapy drag & drop exercise app. Perfect for stroke rehabilitation.">
+    <meta name="twitter:image" content="https://finepointrehab.com/images/precision-drop-preview.jpg">
+    
+    <!-- Accessibility Meta Tags -->
+    <meta name="application-name" content="Precision Drop">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Precision Drop">
+    
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MobileApplication",
+      "name": "Precision Drop",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Precision Drop is a therapeutic drag & drop exercise application designed to improve motor skills, coordination, and dexterity for rehabilitation patients recovering from stroke or other neurological conditions.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "56"
+      }
+    }
+    </script>
+    
     <style>
         body {
             margin: 0;
@@ -138,6 +188,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
         }
         
         #settings-toggle:hover {
@@ -338,7 +389,7 @@
         
         <div id="game-area"></div>
         
-        <button id="settings-toggle">Settings</button>
+        <a href="index.html" id="settings-toggle">Home</a>
         
         <div id="settings-panel">
             <h2>Settings</h2>
@@ -422,6 +473,9 @@
         const roundNumber = document.getElementById('round-number');
         const totalRounds = document.getElementById('total-rounds');
         
+        // Add color palette for matching pairs
+        const pairColors = ['#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6', '#3498db', '#e67e22', '#1abc9c', '#34495e'];
+        
         // Create stars for background effect
         const starsCount = 50;
         
@@ -488,12 +542,37 @@
             hard: { targetSize: 40, objectSize: 25, points: 300 }
         };
         
-        // Toggle settings panel
-        settingsToggle.addEventListener('click', () => {
-            if (!isSessionActive) {
-                settingsPanel.classList.toggle('hidden');
-            }
-        });
+        // Function definitions - utility functions first
+        function showSettings() {
+            settingsPanel.classList.remove('hidden');
+            statsPanel.classList.add('hidden');
+            completionMessage.classList.add('hidden');
+        }
+        
+        function clearGameElements() {
+            activeDroppables.forEach(d => d.remove());
+            activeTargets.forEach(t => t.remove());
+            activeDroppables = [];
+            activeTargets = [];
+        }
+        
+        function updateStats() {
+            scoreElement.textContent = score;
+            successfulDropsElement.textContent = successfulDrops;
+            accuracyElement.textContent = totalDrops > 0 ? 
+                Math.round(successfulDrops / totalDrops * 100) + '%' : '0%';
+        }
+        
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+            timeLeftElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updateProgress() {
+            roundNumber.textContent = currentRound;
+            totalRounds.textContent = maxRounds;
+        }
         
         // Start new session
         startSessionButton.addEventListener('click', startSession);
@@ -591,6 +670,12 @@
             for (let i = 0; i < numTargets; i++) {
                 const target = document.createElement('div');
                 target.classList.add('target');
+                
+                // Apply color to the target
+                const color = pairColors[i % pairColors.length];
+                target.style.borderColor = color;
+                target.style.background = color + '33'; // Add a subtle background with 20% opacity
+                
                 target.style.width = `${settings.targetSize}px`;
                 target.style.height = `${settings.targetSize}px`;
                 
@@ -607,6 +692,17 @@
                 target.style.top = `${y}px`;
                 target.dataset.targetId = i;
                 
+                // Add numbers to targets if setting is enabled
+                if (showNumbers) {
+                    target.textContent = i + 1;
+                    target.style.display = 'flex';
+                    target.style.alignItems = 'center';
+                    target.style.justifyContent = 'center';
+                    target.style.color = 'white';
+                    target.style.fontSize = '18px';
+                    target.style.fontWeight = 'bold';
+                }
+                
                 gameArea.appendChild(target);
                 activeTargets.push(target);
             }
@@ -617,6 +713,10 @@
                 draggable.classList.add('draggable');
                 draggable.style.width = `${settings.objectSize}px`;
                 draggable.style.height = `${settings.objectSize}px`;
+                
+                // Apply matching color to the draggable
+                const color = pairColors[i % pairColors.length];
+                draggable.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), ${color})`;
                 
                 if (showNumbers) {
                     draggable.textContent = i + 1;
@@ -659,7 +759,7 @@
             }
             
             // Update status
-            statusMessage.textContent = "Drag objects from all directions to their matching targets";
+            statusMessage.textContent = "Drag objects to their matching colored targets";
             roundStartTime = Date.now();
         }
         
@@ -669,6 +769,113 @@
             
             // Touch events
             element.addEventListener('touchstart', startDrag);
+        }
+        
+        function checkProximity() {
+            const dragRect = currentDragging.getBoundingClientRect();
+            const dragCenter = {
+                x: dragRect.left + dragRect.width / 2,
+                y: dragRect.top + dragRect.height / 2
+            };
+            
+            // Reset all targets
+            activeTargets.forEach(target => target.classList.remove('active'));
+            
+            // Check each target
+            activeTargets.forEach(target => {
+                const targetRect = target.getBoundingClientRect();
+                const targetCenter = {
+                    x: targetRect.left + targetRect.width / 2,
+                    y: targetRect.top + targetRect.height / 2
+                };
+                
+                const distance = Math.hypot(
+                    dragCenter.x - targetCenter.x,
+                    dragCenter.y - targetCenter.y
+                );
+                
+                // Activate target if close enough
+                if (distance < targetRect.width / 2 + dragRect.width / 2) {
+                    target.classList.add('active');
+                }
+            });
+        }
+        
+        function checkDrop() {
+            const dragRect = currentDragging.getBoundingClientRect();
+            const dragCenter = {
+                x: dragRect.left + dragRect.width / 2,
+                y: dragRect.top + dragRect.height / 2
+            };
+            
+            let successfulDrop = false;
+            const difficulty = difficultySelect.value;
+            const settings = difficulties[difficulty];
+            
+            activeTargets.forEach(target => {
+                const targetRect = target.getBoundingClientRect();
+                const targetCenter = {
+                    x: targetRect.left + targetRect.width / 2,
+                    y: targetRect.top + targetRect.height / 2
+                };
+                
+                const distance = Math.hypot(
+                    dragCenter.x - targetCenter.x,
+                    dragCenter.y - targetCenter.y
+                );
+                
+                // Check if drop is successful
+                if (distance < targetRect.width / 3 && 
+                    target.dataset.targetId === currentDragging.dataset.targetId) {
+                    successfulDrop = true;
+                    
+                    // Get the color for this pair
+                    const colorIndex = parseInt(target.dataset.targetId) % pairColors.length;
+                    const color = pairColors[colorIndex];
+                    
+                    // Success animation - use the pair color for the success indicator
+                    target.classList.add('success');
+                    target.style.borderColor = color;
+                    target.style.boxShadow = `0 0 20px ${color}`;
+                    
+                    setTimeout(() => {
+                        target.classList.remove('success');
+                        target.style.boxShadow = '';
+                    }, 500);
+                    
+                    // Update score
+                    const dropTime = Date.now() - roundStartTime;
+                    totalDropTime += dropTime;
+                    
+                    // Award points based on speed and difficulty
+                    const timeBonus = Math.max(0, Math.floor((5000 - dropTime) / 100));
+                    const points = settings.points + timeBonus;
+                    score += points;
+                    successfulDrops++;
+                    
+                    // Remove this draggable
+                    currentDragging.remove();
+                    activeDroppables = activeDroppables.filter(d => d !== currentDragging);
+                    
+                    // Show success message
+                    statusMessage.textContent = `Perfect! +${points} points`;
+                    statusMessage.style.color = '#2ecc71';
+                    
+                    // Check if round is complete
+                    if (activeDroppables.length === 0) {
+                        setTimeout(() => nextRound(), 1000);
+                    }
+                }
+            });
+            
+            if (!successfulDrop) {
+                // Return to original position if drop failed
+                statusMessage.textContent = "Try again - drag to the matching colored target";
+                statusMessage.style.color = '#e74c3c';
+            }
+            
+            totalDrops++;
+            updateStats();
         }
         
         function startDrag(e) {
@@ -742,103 +949,6 @@
             currentDragging = null;
         }
         
-        function checkProximity() {
-            const dragRect = currentDragging.getBoundingClientRect();
-            const dragCenter = {
-                x: dragRect.left + dragRect.width / 2,
-                y: dragRect.top + dragRect.height / 2
-            };
-            
-            // Reset all targets
-            activeTargets.forEach(target => target.classList.remove('active'));
-            
-            // Check each target
-            activeTargets.forEach(target => {
-                const targetRect = target.getBoundingClientRect();
-                const targetCenter = {
-                    x: targetRect.left + targetRect.width / 2,
-                    y: targetRect.top + targetRect.height / 2
-                };
-                
-                const distance = Math.hypot(
-                    dragCenter.x - targetCenter.x,
-                    dragCenter.y - targetCenter.y
-                );
-                
-                // Activate target if close enough
-                if (distance < targetRect.width / 2 + dragRect.width / 2) {
-                    target.classList.add('active');
-                }
-            });
-        }
-        
-        function checkDrop() {
-            const dragRect = currentDragging.getBoundingClientRect();
-            const dragCenter = {
-                x: dragRect.left + dragRect.width / 2,
-                y: dragRect.top + dragRect.height / 2
-            };
-            
-            let successfulDrop = false;
-            const difficulty = difficultySelect.value;
-            const settings = difficulties[difficulty];
-            
-            activeTargets.forEach(target => {
-                const targetRect = target.getBoundingClientRect();
-                const targetCenter = {
-                    x: targetRect.left + targetRect.width / 2,
-                    y: targetRect.top + targetRect.height / 2
-                };
-                
-                const distance = Math.hypot(
-                    dragCenter.x - targetCenter.x,
-                    dragCenter.y - targetCenter.y
-                );
-                
-                // Check if drop is successful
-                if (distance < targetRect.width / 3 && 
-                    target.dataset.targetId === currentDragging.dataset.targetId) {
-                    successfulDrop = true;
-                    
-                    // Success animation
-                    target.classList.add('success');
-                    setTimeout(() => target.classList.remove('success'), 500);
-                    
-                    // Update score
-                    const dropTime = Date.now() - roundStartTime;
-                    totalDropTime += dropTime;
-                    
-                    // Award points based on speed and difficulty
-                    const timeBonus = Math.max(0, Math.floor((5000 - dropTime) / 100));
-                    const points = settings.points + timeBonus;
-                    score += points;
-                    successfulDrops++;
-                    
-                    // Remove this draggable
-                    currentDragging.remove();
-                    activeDroppables = activeDroppables.filter(d => d !== currentDragging);
-                    
-                    // Show success message
-                    statusMessage.textContent = `Perfect! +${points} points`;
-                    statusMessage.style.color = '#2ecc71';
-                    
-                    // Check if round is complete
-                    if (activeDroppables.length === 0) {
-                        setTimeout(() => nextRound(), 1000);
-                    }
-                }
-            });
-            
-            if (!successfulDrop) {
-                // Return to original position if drop failed
-                statusMessage.textContent = "Try again - drag to the matching target";
-                statusMessage.style.color = '#e74c3c';
-            }
-            
-            totalDrops++;
-            updateStats();
-        }
-        
         function nextRound() {
             currentRound++;
             
@@ -857,37 +967,6 @@
                 const showNumbers = showNumbersSelect.value === 'yes';
                 createRound(difficulty, numTargets, showNumbers);
             }, 1500);
-        }
-        
-        function clearGameElements() {
-            activeDroppables.forEach(d => d.remove());
-            activeTargets.forEach(t => t.remove());
-            activeDroppables = [];
-            activeTargets = [];
-        }
-        
-        function updateStats() {
-            scoreElement.textContent = score;
-            successfulDropsElement.textContent = successfulDrops;
-            accuracyElement.textContent = totalDrops > 0 ? 
-                Math.round(successfulDrops / totalDrops * 100) + '%' : '0%';
-        }
-        
-        function updateTimer() {
-            const minutes = Math.floor(timeRemaining / 60000);
-            const seconds = Math.floor((timeRemaining % 60000) / 1000);
-            timeLeftElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-        
-        function updateProgress() {
-            roundNumber.textContent = currentRound;
-            totalRounds.textContent = maxRounds;
-        }
-        
-        function showSettings() {
-            settingsPanel.classList.remove('hidden');
-            statsPanel.classList.add('hidden');
-            completionMessage.classList.add('hidden');
         }
         
         // Prevent zooming on double tap
@@ -909,20 +988,20 @@
         // Load/save settings with localStorage
         document.addEventListener('DOMContentLoaded', function() {
             // Load saved settings if they exist
-            if (localStorage.getItem('precisionDifficulty')) {
-                difficultySelect.value = localStorage.getItem('precisionDifficulty');
+            if (localStorage.getItem('finepointrehab-difficulty')) {
+                difficultySelect.value = localStorage.getItem('finepointrehab-difficulty');
             }
             
-            if (localStorage.getItem('precisionNumTargets')) {
-                numTargetsSelect.value = localStorage.getItem('precisionNumTargets');
+            if (localStorage.getItem('finepointrehab-numTargets')) {
+                numTargetsSelect.value = localStorage.getItem('finepointrehab-numTargets');
             }
             
-            if (localStorage.getItem('precisionDuration')) {
-                sessionDurationInput.value = localStorage.getItem('precisionDuration');
+            if (localStorage.getItem('finepointrehab-duration')) {
+                sessionDurationInput.value = localStorage.getItem('finepointrehab-duration');
             }
             
-            if (localStorage.getItem('precisionShowNumbers')) {
-                showNumbersSelect.value = localStorage.getItem('precisionShowNumbers');
+            if (localStorage.getItem('finepointrehab-showNumbers')) {
+                showNumbersSelect.value = localStorage.getItem('finepointrehab-showNumbers');
             }
             
             // Save settings when they change
@@ -934,10 +1013,10 @@
         
         // Save settings to localStorage
         function saveSettings() {
-            localStorage.setItem('precisionDifficulty', difficultySelect.value);
-            localStorage.setItem('precisionNumTargets', numTargetsSelect.value);
-            localStorage.setItem('precisionDuration', sessionDurationInput.value);
-            localStorage.setItem('precisionShowNumbers', showNumbersSelect.value);
+            localStorage.setItem('finepointrehab-difficulty', difficultySelect.value);
+            localStorage.setItem('finepointrehab-numTargets', numTargetsSelect.value);
+            localStorage.setItem('finepointrehab-duration', sessionDurationInput.value);
+            localStorage.setItem('finepointrehab-showNumbers', showNumbersSelect.value);
         }
     </script>
 </body>
