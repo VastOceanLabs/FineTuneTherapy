@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stroke Therapy Trace and Reveal</title>
+    <title>Trace & Reveal Exercise | Fine Point Rehab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Interactive trace and reveal exercise for fine motor skills and coordination therapy. Enhance precision control and stroke rehabilitation with this customizable therapeutic exercise from Fine Point Rehab.">
+    <meta name="keywords" content="trace therapy, stroke rehabilitation, fine motor skills, hand-eye coordination, occupational therapy games, physical therapy exercises, brain injury recovery, neurological rehabilitation, Fine Point Rehab">
+    
     <style>
         body {
             margin: 0;
@@ -13,7 +18,7 @@
             touch-action: none;
             user-select: none;
             -webkit-user-select: none;
-            background: #1a1a2e;
+            background: #121d33;
             color: white;
             min-height: 100vh;
         }
@@ -35,8 +40,8 @@
         }
         
         #traceCanvas {
-            background: #2d2d44;
-            border: 3px solid #4a69bd;
+            background: #1c2a4e;
+            border: 3px solid rgba(111, 211, 245, 0.9);
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             cursor: crosshair;
@@ -65,14 +70,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #16213e;
+            background-color: rgba(8, 15, 35, 0.95);
             border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
             z-index: 100;
-            width: 90%;
+            width: 80%;
             max-width: 400px;
-            border: 2px solid #4a69bd;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         #settings-panel h2 {
@@ -81,6 +86,7 @@
             margin-top: 0;
             margin-bottom: 25px;
             font-size: 24px;
+            letter-spacing: 0.5px;
         }
         
         .settings-group {
@@ -99,43 +105,74 @@
             width: 100%;
             padding: 12px;
             border-radius: 8px;
-            border: 1px solid #4a69bd;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 16px;
-            background-color: #0f3460;
+            background-color: rgba(0, 10, 30, 0.8);
             color: white;
-            box-sizing: border-box;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: rgba(111, 211, 245, 0.8);
+            box-shadow: 0 0 0 2px rgba(111, 211, 245, 0.3);
         }
         
         button {
-            background-color: #4a69bd;
-            color: white;
+            background-color: rgba(111, 211, 245, 0.9);
+            color: #121d33;
             border: none;
             border-radius: 10px;
-            padding: 12px 20px;
+            padding: 12px 15px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             width: 100%;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
         
         button:hover {
-            background-color: #6c8bd6;
+            background-color: rgba(111, 211, 245, 1);
+            transform: translateY(-2px);
+        }
+        
+        #home-button {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(111, 211, 245, 0.8);
+            color: #121d33;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 90;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #home-button:hover {
+            background-color: rgba(111, 211, 245, 1);
             transform: translateY(-2px);
         }
         
         #stats-panel {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: #16213e;
+            background-color: rgba(8, 15, 35, 0.8);
             padding: 15px;
             display: flex;
             justify-content: space-around;
-            border-top: 2px solid #4a69bd;
-            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
         }
         
         .stat-box {
@@ -145,22 +182,21 @@
         .stat-value {
             font-size: 24px;
             font-weight: bold;
-            color: #4a69bd;
+            color: rgba(111, 211, 245, 1);
         }
         
         .stat-label {
             font-size: 14px;
-            color: #e8e8e8;
+            color: rgba(255, 255, 255, 0.8);
         }
         
-        #progress-bar {
-            position: fixed;
+        #timer-bar {
+            position: absolute;
             top: 0;
             left: 0;
             height: 8px;
-            background-color: #4a69bd;
+            background-color: rgba(111, 211, 245, 0.9);
             width: 100%;
-            transition: width 0.1s linear;
             z-index: 20;
         }
         
@@ -173,13 +209,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #16213e;
+            background-color: rgba(8, 15, 35, 0.95);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
             text-align: center;
-            max-width: 90%;
-            border: 2px solid #4a69bd;
+            max-width: 80%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 101;
         }
         
@@ -187,7 +223,7 @@
             position: absolute;
             width: 6px;
             height: 6px;
-            background-color: #4a69bd;
+            background-color: rgba(111, 211, 245, 0.8);
             border-radius: 50%;
             pointer-events: none;
             animation: particle-fade 1s ease-out forwards;
@@ -222,7 +258,7 @@
         .circle-particle {
             width: 15px;
             height: 15px;
-            background-color: #ff69b4;
+            background-color: rgba(111, 211, 245, 0.9);
             border-radius: 50%;
         }
         
@@ -246,9 +282,9 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 20px;
-            color: #e8e8e8;
+            color: white;
             text-align: center;
-            background-color: rgba(22, 33, 62, 0.9);
+            background-color: rgba(8, 15, 35, 0.9);
             padding: 10px 20px;
             border-radius: 10px;
             z-index: 10;
@@ -259,13 +295,13 @@
             top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            background: #16213e;
+            background: rgba(8, 15, 35, 0.9);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 18px;
-            color: #4a69bd;
+            color: rgba(111, 211, 245, 1);
             font-weight: bold;
-            border: 2px solid #4a69bd;
+            border: 1px solid rgba(111, 211, 245, 0.5);
         }
         
         .completion-text {
@@ -295,11 +331,32 @@
                 opacity: 0;
             }
         }
+        
+        #stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="progress-bar" class="hidden"></div>
+        <div id="stars-container"></div>
+        <div id="timer-bar" class="hidden"></div>
         
         <div id="instructions" class="hidden">
             Paint over the dotted line to reveal the image
@@ -311,6 +368,8 @@
             <canvas id="guideLayer" width="500" height="500"></canvas>
             <canvas id="completionLayer" width="500" height="500"></canvas>
         </div>
+        
+        <button id="home-button">Home</button>
         
         <div id="settings-panel">
             <h2>Trace & Reveal Settings</h2>
@@ -394,8 +453,29 @@
         const statsPanel = document.getElementById('stats-panel');
         const completionMessage = document.getElementById('completion-message');
         const instructions = document.getElementById('instructions');
-        const progressBar = document.getElementById('progress-bar');
+        const progressBar = document.getElementById('timer-bar');
         const coverageProgress = document.getElementById('coverage-progress');
+        const homeButton = document.getElementById('home-button');
+        const starsContainer = document.getElementById('stars-container');
+        
+        // Create stars for background effect
+        const starsCount = 50;
+        
+        for (let i = 0; i < starsCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            
+            const size = Math.random() * 2 + 0.5;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            
+            star.style.opacity = Math.random() * 0.4 + 0.1;
+            
+            starsContainer.appendChild(star);
+        }
         
         // Settings
         const brushSizeSelect = document.getElementById('brush-size');
@@ -427,6 +507,7 @@
         let currentDifficulty = 'medium';
         let isCompleting = false;
         let bestCoverage = 0;
+        let currentShapeType = '';
         
         // Hidden image canvas
         const hiddenImage = document.createElement('canvas');
@@ -688,7 +769,7 @@
                         { x: centerX + width / 2, y: centerY + height / 2 }
                     ];
                 },
-                
+                                 
                 rhombus: () => {
                     const size = Math.min(canvas.width, canvas.height) * 0.6;
                     const centerX = canvas.width / 2;
@@ -736,7 +817,6 @@
                     ];
                 }
             },
-            
             hard: {
                 house: () => {
                     const size = Math.min(canvas.width, canvas.height) * 0.5;
@@ -958,6 +1038,25 @@
         startButton.addEventListener('click', startSession);
         restartButton.addEventListener('click', resetToSettings);
         
+        // Home button functionality
+        homeButton.addEventListener('click', function(event) {
+            // Stop event from bubbling up to parent elements
+            event.stopPropagation();
+            
+            // Prevent any default behavior
+            event.preventDefault();
+            
+            if (isSessionActive) {
+                if (confirm("Are you sure you want to leave? Your current session progress will be lost.")) {
+                    // Use direct top-level navigation to ensure it works
+                    window.top.location.href = './index.html';
+                }
+            } else {
+                // Use direct top-level navigation to ensure it works
+                window.top.location.href = './index.html';
+            }
+        });
+        
         // Drawing events
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
@@ -1079,7 +1178,7 @@
         }
         
         function drawGuidePath() {
-            guideCtx.strokeStyle = '#4a69bd';
+            guideCtx.strokeStyle = 'rgba(111, 211, 245, 0.9)';
             guideCtx.lineWidth = 3;
             guideCtx.setLineDash([5, 10]);
             
@@ -1310,6 +1409,56 @@
         function resetToSettings() {
             completionMessage.classList.add('hidden');
             settingsPanel.classList.remove('hidden');
+        }
+        
+        // Prevent zooming on double tap
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Load/save settings with localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved settings if they exist
+            if (localStorage.getItem('traceRevealBrushSize')) {
+                brushSizeSelect.value = localStorage.getItem('traceRevealBrushSize');
+            }
+            
+            if (localStorage.getItem('traceRevealDuration')) {
+                sessionDurationInput.value = localStorage.getItem('traceRevealDuration');
+            }
+            
+            if (localStorage.getItem('traceRevealDifficulty')) {
+                difficultyLevelSelect.value = localStorage.getItem('traceRevealDifficulty');
+            }
+            
+            if (localStorage.getItem('traceRevealCoverage')) {
+                coverageRequiredSelect.value = localStorage.getItem('traceRevealCoverage');
+            }
+            
+            // Save settings when they change
+            brushSizeSelect.addEventListener('change', saveSettings);
+            sessionDurationInput.addEventListener('change', saveSettings);
+            difficultyLevelSelect.addEventListener('change', saveSettings);
+            coverageRequiredSelect.addEventListener('change', saveSettings);
+        });
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('traceRevealBrushSize', brushSizeSelect.value);
+            localStorage.setItem('traceRevealDuration', sessionDurationInput.value);
+            localStorage.setItem('traceRevealDifficulty', difficultyLevelSelect.value);
+            localStorage.setItem('traceRevealCoverage', coverageRequiredSelect.value);
         }
     </script>
 </body>

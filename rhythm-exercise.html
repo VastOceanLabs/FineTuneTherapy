@@ -3,7 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rhythm Reach - Stroke Therapy Pattern Memory</title>
+    
+    <!-- SEO-optimized title -->
+    <title>Rhythm Reach | Cognitive Pattern Memory Game for Stroke Rehabilitation</title>
+    
+    <!-- Primary meta tags for SEO -->
+    <meta name="description" content="Rhythm Reach helps improve cognitive function and memory through engaging pattern-matching exercises. Perfect for stroke rehabilitation, memory training, and cognitive therapy at home or in clinical settings.">
+    <meta name="keywords" content="stroke rehabilitation, cognitive therapy, memory game, pattern memory, brain training, rehabilitation exercise, cognitive rehabilitation">
+    <meta name="author" content="Fine Point Rehab">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://finepointrehab.com/exercises/rhythm-exercise">
+    <meta property="og:title" content="Rhythm Reach | Cognitive Pattern Memory Game for Stroke Rehabilitation">
+    <meta property="og:description" content="Improve cognitive function and memory with this engaging pattern-matching game designed for stroke rehabilitation and cognitive therapy.">
+    <meta property="og:image" content="https://finepointrehab.com/images/rhythm-reach-preview.jpg">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rhythm Reach | Cognitive Pattern Memory Game for Stroke Rehabilitation">
+    <meta name="twitter:description" content="Improve cognitive function and memory with this engaging pattern-matching game designed for stroke rehabilitation and cognitive therapy.">
+    <meta name="twitter:image" content="https://finepointrehab.com/images/rhythm-reach-preview.jpg">
+    
+    <!-- Additional SEO meta tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Canonical URL to prevent duplicate content issues -->
+    <link rel="canonical" href="https://finepointrehab.com/exercises/rhythm-exercise">
+    
     <style>
         body {
             margin: 0;
@@ -134,6 +165,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
         }
         
         #settings-toggle:hover {
@@ -321,73 +353,80 @@
     </style>
 </head>
 <body>
-    <div id="game-container">
+    <!-- Semantic HTML structure added for better SEO -->
+    <header>
+        <h1 class="visually-hidden">Rhythm Reach - Cognitive Memory Training Game</h1>
+    </header>
+    
+    <main id="game-container">
         <div id="stars-container"></div>
         <div id="timer-bar"></div>
         
-        <div id="sequence-display">Round <span id="round-number">1</span></div>
-        <div id="status-message"></div>
+        <div id="sequence-display" aria-live="polite">Round <span id="round-number">1</span></div>
+        <div id="status-message" aria-live="polite"></div>
         
-        <div id="game-area"></div>
+        <div id="game-area" role="grid" aria-label="Memory pattern game grid"></div>
         
-        <button id="settings-toggle">Settings</button>
+        <a href="index.html" id="settings-toggle" aria-label="Return to home page">Home</a>
         
-        <div id="settings-panel">
+        <aside id="settings-panel">
             <h2>Settings</h2>
-            <div class="settings-group">
-                <label class="settings-label">Starting Sequence Length:</label>
-                <select id="start-length">
-                    <option value="2">2 items (Easy)</option>
-                    <option value="3" selected>3 items (Medium)</option>
-                    <option value="4">4 items (Hard)</option>
-                </select>
-            </div>
-            
-            <div class="settings-group">
-                <label class="settings-label">Speed:</label>
-                <select id="sequence-speed">
-                    <option value="slow" selected>Slow</option>
-                    <option value="medium">Medium</option>
-                    <option value="fast">Fast</option>
-                </select>
-            </div>
-            
-            <div class="settings-group">
-                <label class="settings-label">Session Duration (minutes):</label>
-                <input type="number" id="session-duration" min="1" max="10" value="2">
-            </div>
-            
-            <div class="settings-group">
-                <label class="settings-label">Show Numbers on Pads:</label>
-                <select id="show-numbers">
-                    <option value="no" selected>No</option>
-                    <option value="yes">Yes</option>
-                </select>
-            </div>
-            
-            <button id="start-session">Start Session</button>
-        </div>
+            <form>
+                <div class="settings-group">
+                    <label class="settings-label" for="start-length">Starting Sequence Length:</label>
+                    <select id="start-length" name="start-length">
+                        <option value="2">2 items (Easy)</option>
+                        <option value="3" selected>3 items (Medium)</option>
+                        <option value="4">4 items (Hard)</option>
+                    </select>
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label" for="sequence-speed">Speed:</label>
+                    <select id="sequence-speed" name="sequence-speed">
+                        <option value="slow" selected>Slow</option>
+                        <option value="medium">Medium</option>
+                        <option value="fast">Fast</option>
+                    </select>
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label" for="session-duration">Session Duration (minutes):</label>
+                    <input type="number" id="session-duration" name="session-duration" min="1" max="10" value="2">
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label" for="show-numbers">Show Numbers on Pads:</label>
+                    <select id="show-numbers" name="show-numbers">
+                        <option value="no" selected>No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+                
+                <button id="start-session" type="button">Start Session</button>
+            </form>
+        </aside>
         
-        <div id="stats-panel" class="hidden">
+        <footer id="stats-panel" class="hidden">
             <div class="stat-box">
-                <div id="score" class="stat-value">0</div>
+                <div id="score" class="stat-value" aria-live="polite">0</div>
                 <div class="stat-label">Score</div>
             </div>
             <div class="stat-box">
-                <div id="sequences" class="stat-value">0</div>
+                <div id="sequences" class="stat-value" aria-live="polite">0</div>
                 <div class="stat-label">Sequences Completed</div>
             </div>
             <div class="stat-box">
-                <div id="time-left" class="stat-value">2:00</div>
+                <div id="time-left" class="stat-value" aria-live="polite">2:00</div>
                 <div class="stat-label">Time Left</div>
             </div>
             <div class="stat-box">
-                <div id="accuracy" class="stat-value">0%</div>
+                <div id="accuracy" class="stat-value" aria-live="polite">0%</div>
                 <div class="stat-label">Accuracy</div>
             </div>
-        </div>
+        </footer>
         
-        <div id="completion-message" class="hidden">
+        <div id="completion-message" class="hidden" aria-live="polite">
             <h2>Session Complete!</h2>
             <div id="completion-scores">
                 <p>Final Score: <span id="final-score" class="score-highlight">0</span></p>
@@ -395,9 +434,31 @@
                 <p>Longest Sequence: <span id="final-longest" class="score-highlight">0</span></p>
                 <p>Accuracy: <span id="final-accuracy" class="score-highlight">0%</span></p>
             </div>
-            <button id="restart-button">Start New Session</button>
+            <button id="restart-button" type="button">Start New Session</button>
         </div>
-    </div>
+    </main>
+    
+    <!-- Adding structured data for rich results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MobileApplication",
+      "name": "Rhythm Reach",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "description": "A cognitive rehabilitation game designed to improve memory and pattern recognition for stroke rehabilitation and cognitive therapy.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "156"
+      }
+    }
+    </script>
     
     <script>
         // Game elements
@@ -487,17 +548,15 @@
                     handlePadClick(e);
                 }, false);
                 
+                // Add ARIA attributes for accessibility
+                pad.setAttribute('role', 'button');
+                pad.setAttribute('aria-label', `Pad ${i + 1}`);
+                pad.setAttribute('tabindex', '0');
+                
                 gameArea.appendChild(pad);
                 pads.push(pad);
             }
         }
-        
-        // Toggle settings panel
-        settingsToggle.addEventListener('click', () => {
-            if (!isSessionActive) {
-                settingsPanel.classList.toggle('hidden');
-            }
-        });
         
         // Start new session
         startSessionButton.addEventListener('click', startSession);

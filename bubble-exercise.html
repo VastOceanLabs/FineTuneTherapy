@@ -3,7 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Fine Motor Therapy Bubble Tap</title>
+    <title>Bubble Tap Therapy - Fine Motor Exercise | Fine Point Rehab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Interactive bubble therapy exercise for stroke rehabilitation and fine motor skills. Evidence-based hand-eye coordination game for physical therapy, occupational therapy, and traumatic brain injury recovery. Home exercise program for finger isolation and reaction time training.">
+    <meta name="keywords" content="bubble exercise therapy, stroke hand exercises, fine motor rehabilitation, reaction time training, finger isolation therapy, hand-eye coordination, occupational therapy games, physical therapy exercises, TBI recovery exercises, neurological rehabilitation">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Bubble Tap Therapy - Fine Motor Exercise for Fine Point Rehab">
+    <meta property="og:description" content="Interactive bubble therapy exercise for stroke rehabilitation and fine motor skills. Evidence-based tool for physical and occupational therapy.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://finepointrehab.com/exercises/bubble-tap-therapy">
+    <meta property="og:image" content="https://finepointrehab.com/images/bubble-therapy-preview.jpg">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bubble Tap Therapy - Fine Motor Exercise">
+    <meta name="twitter:description" content="Interactive rehabilitation exercise for stroke recovery and fine motor skills">
+    <meta name="twitter:image" content="https://finepointrehab.com/images/bubble-therapy-preview.jpg">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ExercisePlan",
+      "name": "Bubble Tap Therapy",
+      "description": "Interactive bubble popping exercise for reaction time, finger isolation, and hand-eye coordination rehabilitation",
+      "activityFrequency": "Daily or as prescribed",
+      "activityDuration": "PT2M-PT10M",
+      "audience": {
+        "@type": "MedicalAudience",
+        "audienceType": "Patient",
+        "suggestedMedicalCondition": ["Stroke", "Traumatic Brain Injury", "Fine Motor Impairment", "Upper Limb Dysfunction"]
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "Fine Point Rehab",
+        "url": "https://finepointrehab.com"
+      }
+    }
+    </script>
+    
     <style>
         body {
             margin: 0;
@@ -88,7 +128,7 @@
             letter-spacing: 0.5px;
         }
         
-        #settings-toggle {
+        #home-button {
             position: fixed;
             bottom: calc(15px + env(safe-area-inset-bottom));
             right: calc(15px + env(safe-area-inset-right));
@@ -109,7 +149,7 @@
             justify-content: center;
         }
         
-        #settings-toggle:hover {
+        #home-button:hover {
             background-color: rgba(111, 211, 245, 1);
             transform: translateY(-2px);
         }
@@ -347,7 +387,7 @@
         <div id="playable-area"></div>
         <div id="bubble"></div>
         
-        <button id="settings-toggle">Settings</button>
+        <button id="home-button" aria-label="Return to home page">Home</button>
         
         <div id="finger-guide" class="hidden">
             <h3>Finger Guide</h3>
@@ -376,7 +416,7 @@
         </div>
         
         <div id="settings-panel" class="hidden">
-            <h2>Settings</h2>
+            <h2>Therapy Settings</h2>
             <div class="settings-group">
                 <label class="settings-label">Bubble Size:</label>
                 <select id="bubble-size">
@@ -405,7 +445,7 @@
                 </select>
             </div>
             
-            <button id="start-session">Start Session</button>
+            <button id="start-session">Start Therapy Session</button>
         </div>
         
         <div id="stats-panel" class="hidden">
@@ -444,7 +484,6 @@
         const bubble = document.getElementById('bubble');
         const timerBar = document.getElementById('timer-bar');
         const settingsPanel = document.getElementById('settings-panel');
-        const settingsToggle = document.getElementById('settings-toggle');
         const statsPanel = document.getElementById('stats-panel');
         const completionMessage = document.getElementById('completion-message');
         const starsContainer = document.getElementById('stars-container');
@@ -511,11 +550,9 @@
             'small': 70
         };
         
-        // Toggle settings panel
-        settingsToggle.addEventListener('click', () => {
-            if (!isSessionActive) {
-                settingsPanel.classList.toggle('hidden');
-            }
+        // Home button functionality
+        document.getElementById('home-button').addEventListener('click', function() {
+            window.location.href = 'index.html';
         });
         
         // Start new session
